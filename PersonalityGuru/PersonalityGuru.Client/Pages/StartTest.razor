@@ -1,0 +1,51 @@
+﻿@page "/start"
+
+@using System.Text.Json
+@using Microsoft.AspNetCore.Authorization
+@using PersonalityGuru.Shared.Models
+@rendermode InteractiveAuto
+@inject NavigationManager NavManager
+@inject HttpClient client
+
+@attribute [Authorize]
+
+<PageTitle>Начать тест</PageTitle>
+
+<AuthorizeView>
+    <div class="d-flex flex-column" style="min-height: 93vh">
+        <div class="d-flex align-middle flex-grow-1">
+            <div class="col-5" />
+            <div class="col-2 d-flex align-items-center justify-content-center">
+                <div>
+                    <div>
+                        <h2>Добро пожаловать!</h2>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary w-100" width="100%" @onclick="StartQuestionnaire">Начать тест</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</AuthorizeView>
+
+@code {
+      private async void StartQuestionnaire()
+      {
+          var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5126/api/questionnaire/1");
+          request.Headers.Add("Access-Control-Allow-Origin", "https://localhost:7165");
+          var response = await client.SendAsync(request);
+          response.EnsureSuccessStatusCode();
+          var json = await response.Content.ReadAsStringAsync();
+          var options = new JsonSerializerOptions
+          {
+              PropertyNameCaseInsensitive = true,
+
+          };
+          UserState? state = JsonSerializer.Deserialize<UserState>(json, options);
+          Console.Write("Test");
+          NavManager.NavigateTo("/question");
+      }
+
+     private void ToHomePage() => NavManager.NavigateTo("/");
+ }
