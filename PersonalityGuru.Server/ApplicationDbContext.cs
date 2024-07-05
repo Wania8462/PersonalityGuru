@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PersonalityGuru.Server.Data;
 using PersonalityGuru.Shared.Models;
 
-namespace PersonalityGuru.Server.Data
+namespace PersonalityGuru.Server
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : IdentityDbContext<ApplicationUser>(options)

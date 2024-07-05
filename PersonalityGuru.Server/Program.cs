@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
-using PersonalityGuru.Server.Data;
+using PersonalityGuru.Server;
 using PersonalityGuru.Server.Repositories;
 using PersonalityGuru.Shared.Repository;
 
@@ -16,14 +16,14 @@ builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, x => x.MigrationsAssembly("PersonalityGuru.Server")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddScoped<IQuestionnaireRepository, QuestionnaireRepository>();
 
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
-    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PersonalityGuru.Server.Controllers.QuestionnaireController).Assembly));
+    .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PersonalityGuru.Server.Controllers.UserController).Assembly));
 
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(

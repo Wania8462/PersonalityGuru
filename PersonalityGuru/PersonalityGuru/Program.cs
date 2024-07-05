@@ -1,17 +1,9 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
-using PersonalityGuru.Client.Pages;
-using PersonalityGuru.Components;
 using PersonalityGuru.Components.Account;
 using PersonalityGuru.Server.Data;
-using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using PersonalityGuru.Server.Repositories;
-using PersonalityGuru.Shared.Repository;
+using PersonalityGuru.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 

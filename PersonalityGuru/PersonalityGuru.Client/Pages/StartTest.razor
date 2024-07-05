@@ -3,9 +3,12 @@
 @using System.Text.Json
 @using Microsoft.AspNetCore.Authorization
 @using PersonalityGuru.Shared.Models
+@using System.Security.Claims
 @rendermode InteractiveAuto
 @inject NavigationManager NavManager
 @inject HttpClient client
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 
 @attribute [Authorize]
 
@@ -18,7 +21,7 @@
             <div class="col-2 d-flex align-items-center justify-content-center">
                 <div>
                     <div>
-                        <h2>Добро пожаловать!</h2>
+                        <h2>Добро пожаловать, @context.User.Identity?.Name!</h2>
                     </div>
                     <div>
                         <button class="btn btn-primary w-100" width="100%" @onclick="StartQuestionnaire">Начать тест</button>
@@ -30,22 +33,32 @@
 </AuthorizeView>
 
 @code {
-      private async void StartQuestionnaire()
-      {
-          var request = new HttpRequestMessage(HttpMethod.Post, "/api/questionnaire/1/start");
-          request.Headers.Add("Origin", "https://localhost:7165");
-          var response = await client.SendAsync(request);
-          response.EnsureSuccessStatusCode();
-          var json = await response.Content.ReadAsStringAsync();
-          var options = new JsonSerializerOptions
-          {
-              PropertyNameCaseInsensitive = true,
+    private async Task StartQuestionnaire()
+    {
+        var userId = await GetUserId();
+        if (userId == null) return;
 
-          };
-          UserState? state = JsonSerializer.Deserialize<UserState>(json, options);
-          Console.Write("Test");
-          NavManager.NavigateTo("/question");
-      }
+        var request = new HttpRequestMessage(HttpMethod.Post, $"/api/users/{userId}/questionnaire/1/start");
+        request.Headers.Add("Origin", "https://localhost:7165");
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
 
-     private void ToHomePage() => NavManager.NavigateTo("/");
+        };
+        UserState? state = JsonSerializer.Deserialize<UserState>(json, options);
+        Console.Write("Test");
+        NavManager.NavigateTo("/question");
+    }
+
+    private void ToHomePage() => NavManager.NavigateTo("/");
+
+    private async Task<string?> GetUserId() {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var all = user?.Claims.Select(x => new { x.Type, x.Value }).ToList();
+        return user?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+    }
  }
