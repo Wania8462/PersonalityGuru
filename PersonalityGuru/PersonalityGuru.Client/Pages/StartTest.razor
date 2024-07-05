@@ -32,8 +32,8 @@
 @code {
       private async void StartQuestionnaire()
       {
-          var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5126/api/questionnaire/1");
-          request.Headers.Add("Access-Control-Allow-Origin", "https://localhost:7165");
+          var request = new HttpRequestMessage(HttpMethod.Post, "/api/questionnaire/1/start");
+          request.Headers.Add("Origin", "https://localhost:7165");
           var response = await client.SendAsync(request);
           response.EnsureSuccessStatusCode();
           var json = await response.Content.ReadAsStringAsync();

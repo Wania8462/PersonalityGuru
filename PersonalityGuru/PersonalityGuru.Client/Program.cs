@@ -12,7 +12,7 @@ builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticat
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:5126")
+        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7239")
     });
 
 await builder.Build().RunAsync();
