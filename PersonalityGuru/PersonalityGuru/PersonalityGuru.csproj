@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-PersonalityGuru-1e9cf773-10ff-4d0e-afda-e6cdc727efbb</UserSecretsId>
+    <UserSecretsId>aspnet-PersonalityGuru</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

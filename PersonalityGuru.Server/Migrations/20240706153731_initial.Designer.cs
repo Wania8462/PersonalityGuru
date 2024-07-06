@@ -9,11 +9,11 @@ using PersonalityGuru.Server;
 
 #nullable disable
 
-namespace PersonalityGuru.Migrations
+namespace PersonalityGuru.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240705142433_AspNetUser-AddFullName")]
-    partial class AspNetUserAddFullName
+    [Migration("20240706153731_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -261,7 +261,7 @@ namespace PersonalityGuru.Migrations
                             Group = "O",
                             InvertedScore = false,
                             TestId = 1,
-                            Text = "q1"
+                            Text = "Я вижу красоту и смыслы там, где другие их не видят"
                         },
                         new
                         {
@@ -269,15 +269,71 @@ namespace PersonalityGuru.Migrations
                             Group = "O",
                             InvertedScore = true,
                             TestId = 1,
-                            Text = "q2"
+                            Text = "Если человек мне не нравится, я не восприму его аргументы впринципе"
                         },
                         new
                         {
                             Id = 3,
-                            Group = "O",
+                            Group = "К",
                             InvertedScore = false,
                             TestId = 1,
-                            Text = "q3"
+                            Text = "Я ценю чистоту и порядок по всем"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Group = "К",
+                            InvertedScore = true,
+                            TestId = 1,
+                            Text = "Я редко читаю что-либо о самоорганизации и менеджменте времени"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Group = "Е",
+                            InvertedScore = false,
+                            TestId = 1,
+                            Text = "Мне нравится чувствовать адреналин"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Group = "Е",
+                            InvertedScore = false,
+                            TestId = 1,
+                            Text = "Я довольно быстро и громко говорю"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Group = "А",
+                            InvertedScore = false,
+                            TestId = 1,
+                            Text = "Я могу пожертвовать своими интересами и временем ради других"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Group = "А",
+                            InvertedScore = false,
+                            TestId = 1,
+                            Text = "Мне неспокойно, когда другие чувствуют себя плохо"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Group = "Н",
+                            InvertedScore = false,
+                            TestId = 1,
+                            Text = "Я часто прокручиваю в голове слова людей, которые меня задели"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Group = "Н",
+                            InvertedScore = false,
+                            TestId = 1,
+                            Text = "Я часто представляю худший сценарий"
                         });
                 });
 
