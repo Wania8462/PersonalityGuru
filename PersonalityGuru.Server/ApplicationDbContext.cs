@@ -42,7 +42,7 @@ namespace PersonalityGuru.Server
                 .Property(b => b.Answers)
                 .HasConversion(
                     a => JsonSerializer.Serialize(a.OrderBy(k => k.Key).ToArray(), options),
-                    v => JsonSerializer.Deserialize<Dictionary<int, AnswerOption>>(v, options)!);
+                    a => JsonSerializer.Deserialize<KeyValuePair<int, AnswerOption>[]>(a, options)!.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
     }
 

@@ -1,5 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Net;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PersonalityGuru.Server.Data;
 using PersonalityGuru.Server.Repositories;
@@ -32,6 +34,25 @@ namespace PersonalityGuru.Server.Controllers
         {
             SavedUserAnswers userAnswers = new(userId, questionnaireId, answers);
             await questionnaireRepository.SaveUserAnswersAsync(userAnswers);
+        }
+
+        [HttpGet("{userId}/questionnaire/{questionnaireId}/results/last")]
+        public async Task<Results<NotFound, Ok<SavedUserAnswers>>> GetLastUserAnswers(string userId, int questionnaireId)
+        {
+            var lastAnswer = await questionnaireRepository.GetLastUserAnswersAsync(userId, questionnaireId);
+
+            if(lastAnswer == null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            return TypedResults.Ok(lastAnswer);
+        }
+
+        [HttpGet("{userId}/questionnaire/{questionnaireId}/results/all")]
+        public async Task<List<SavedUserAnswers>> GetAllUserAnswers(string userId, int questionnaireId)
+        {
+            return await questionnaireRepository.GetAllUserAnswersAsync(userId, questionnaireId);
         }
     }
 }

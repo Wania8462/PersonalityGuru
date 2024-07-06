@@ -29,5 +29,20 @@ namespace PersonalityGuru.Server.Repositories
             await appDbContext.UserAnswers.AddAsync(answers);
             await appDbContext.SaveChangesAsync();
         }
+
+        public async Task<List<SavedUserAnswers>> GetAllUserAnswersAsync(string userId, int questionnaireId)
+        {
+            return await appDbContext.UserAnswers
+                .Where(ua => ua.UserId == userId && ua.QuestionnaireId == questionnaireId)
+                .ToListAsync();
+        }
+
+        public Task<SavedUserAnswers?> GetLastUserAnswersAsync(string userId, int questionnaireId)
+        {
+            return appDbContext.UserAnswers
+                .Where(ua => ua.UserId == userId && ua.QuestionnaireId == questionnaireId)
+                .OrderByDescending(ua => ua.CompletedAt)
+                .FirstOrDefaultAsync();
+        }
     }
 }
