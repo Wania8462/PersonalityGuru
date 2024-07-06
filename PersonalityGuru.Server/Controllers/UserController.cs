@@ -18,10 +18,10 @@ namespace PersonalityGuru.Server.Controllers
         }
 
         [HttpPost("{userId}/questionnaire/{questionnaireId}/start")]
-        public async Task<UserState> StartQuestionnaire(string userId, int questionnaireId)
+        public async Task<CurrentQuestionnaire> StartQuestionnaire(string userId, int questionnaireId)
         {
             Questionnaire questionnaire =  await questionnaireRepository.GetQuestionnaireAsync(questionnaireId);
-            UserState state = new UserState(userId);
+            CurrentQuestionnaire state = new(userId);
             state.StartTest(questionnaire);
             return state;
         }

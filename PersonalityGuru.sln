@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalityGuru", "Personal
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalityGuru.Client", "PersonalityGuru\PersonalityGuru.Client\PersonalityGuru.Client.csproj", "{21361BC9-CF24-4930-8193-250E93903809}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalityGuru.Shared", "PersonalityGuru.Shared\PersonalityGuru.Shared.csproj", "{B9EAA485-8071-46A3-82BB-615BFA4406B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalityGuru.Shared", "PersonalityGuru.Shared\PersonalityGuru.Shared.csproj", "{B9EAA485-8071-46A3-82BB-615BFA4406B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalityGuru.Server", "PersonalityGuru.Server\PersonalityGuru.Server.csproj", "{876F34DD-34DB-4C4B-8AD4-71E0D047DBF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalityGuru.Server", "PersonalityGuru.Server\PersonalityGuru.Server.csproj", "{876F34DD-34DB-4C4B-8AD4-71E0D047DBF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

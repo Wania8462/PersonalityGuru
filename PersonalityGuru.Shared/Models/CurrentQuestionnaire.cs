@@ -1,13 +1,13 @@
 namespace PersonalityGuru.Shared.Models
 {
-    public class UserState
+    public class CurrentQuestionnaire
     {
-        public UserState()
+        public CurrentQuestionnaire()
         {
             
         }
 
-        public UserState(string userName)
+        public CurrentQuestionnaire(string userName)
         {
             UserName = userName;
         }
@@ -26,6 +26,7 @@ namespace PersonalityGuru.Shared.Models
         }
 
         public Question? GetNextQuestion() {
+            Console.WriteLine("Test");
             if (nextQuestion == CurrentTest.Questions.Count) 
                 return null;
             

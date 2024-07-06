@@ -2,12 +2,14 @@
 
 @using System.Text.Json
 @using Microsoft.AspNetCore.Authorization
+@using PersonalityGuru.Shared
 @using PersonalityGuru.Shared.Models
 @using System.Security.Claims
 @rendermode InteractiveAuto
 @inject NavigationManager NavManager
 @inject HttpClient client
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ClientUserState userState
 
 
 @attribute [Authorize]
@@ -48,8 +50,8 @@
             PropertyNameCaseInsensitive = true,
 
         };
-        UserState? state = JsonSerializer.Deserialize<UserState>(json, options);
-        Console.Write("Test");
+        CurrentQuestionnaire? current = JsonSerializer.Deserialize<CurrentQuestionnaire>(json, options);
+        userState.CurrentQuestionnaire = current;
         NavManager.NavigateTo("/question");
     }
 

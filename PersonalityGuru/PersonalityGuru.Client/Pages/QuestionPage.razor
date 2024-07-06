@@ -1,0 +1,130 @@
+﻿@page "/question"
+
+@rendermode InteractiveAuto
+@inject NavigationManager NavManager
+@inject ClientUserState userState
+
+@using PersonalityGuru.Shared
+@using PersonalityGuru.Shared.Models
+
+<head>
+    <PageTitle>Question page</PageTitle>
+</head>
+
+<div class="navbar bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-text text-white">
+            <a class="navbar-brand text-white" href="/">Home page</a>
+        </span>
+    </div>
+</div>
+
+<div class="d-flex flex-column min-vw-100" style="min-height: 93vh">
+    <div class="row d-flex align-middle flex-grow-1">
+        <div class="col-3" />
+        <div class="col-6 d-flex align-items-center justify-content-center">
+            <div class="flex-fill">
+                <div class="card" style="background-color: whitesmoke; margin-bottom: 16px; padding: 8px;">
+                    <h2>@QuestionText</h2>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="StronglyNo"
+                               @onclick="@(answer => SelectOption(AnswerOption.StronglyNo))">
+                        <label class="form-check-label" for="StronglyNo">
+                            Точно нет
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="MaybeNo"
+                               @onclick="@(answer => SelectOption(AnswerOption.MaybeNo))">
+                        <label class="form-check-label" for="MaybeNo">
+                            Скорее нет
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="Neutral"
+                               @onclick="@(answer => SelectOption(AnswerOption.Neutral))">
+                        <label class="form-check-label" for="Neutral">
+                            Не знаю
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="MaybeYes"
+                               @onclick="@(answer => SelectOption(AnswerOption.MaybeYes))">
+                        <label class="form-check-label" for="MaybeYes">
+                            Скорее да
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="StronglyYes"
+                               @onclick="@(answer => SelectOption(AnswerOption.StronglyYes))">
+                        <label class="form-check-label" for="StronglyYes">
+                            Точно да
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" @onclick="NextQuestion">Слейдущий вопрос</button>
+            </div>
+        </div>
+        <div class="col-3 d-flex justify-content-end">
+            <h3>@currentQuestion/@questonniareLength</h3>
+        </div>
+    </div>
+</div>
+
+@code {
+    public int id { get; set; }
+    public string QuestionText { get; set; }
+
+    private AnswerOption answer = AnswerOption.None;
+    private CurrentQuestionnaire? state = null;
+    private Question? question;
+    private string userId = "TODOProvideUserId";
+    private int currentQuestion;
+    private int questonniareLength;
+
+    //[CascadingParameter]
+    //public HttpContext? HttpContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        //bool firstRender = !(HttpContext is null);
+        //if (firstRender)
+        //    return;
+
+        state = userState.CurrentQuestionnaire;
+
+        if (state == null)
+        {
+            NavManager.NavigateTo("/");
+            return;
+        }
+
+        question = state.GetNextQuestion();
+        QuestionText = question.Text;
+        currentQuestion = question.Id;
+        questonniareLength = state.CurrentTest.Questions.Count;
+    }
+
+    private void NextQuestion()
+    {
+        if (answer != AnswerOption.None)
+        {
+            if (state.SeeNextQuestion() != null)
+            {
+                state.SaveAnswer(question, answer);
+                NavManager.NavigateTo(NavManager.Uri, true);
+            }
+
+            else
+            {
+                NavManager.NavigateTo("/result");
+            }
+        }
+    }
+
+    private void SelectOption(AnswerOption option) => answer = option;
+
+    private void ToHomePage() => NavManager.NavigateTo("/");
+}

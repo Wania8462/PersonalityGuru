@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using PersonalityGuru.Components.Account;
 using PersonalityGuru.Server.Data;
 using PersonalityGuru.Server;
+using PersonalityGuru.Components;
+using PersonalityGuru.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
+builder.Services.AddSingleton<ClientUserState>();
 
 builder.Services.AddAuthentication(options =>
     {
