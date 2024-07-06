@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
 using PersonalityGuru.Server;
 using PersonalityGuru.Server.Repositories;
-using PersonalityGuru.Shared.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 

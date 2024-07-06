@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PersonalityGuru.Server.Data;
 using PersonalityGuru.Shared.Models;
-using PersonalityGuru.Shared.Repository;
 
 namespace PersonalityGuru.Server.Repositories
 {
@@ -23,6 +22,12 @@ namespace PersonalityGuru.Server.Repositories
             return await appDbContext.Tests
                 .Include(q => q.Questions)
                 .FirstAsync(t => t.Id == id);
+        }
+
+        public async Task SaveUserAnswersAsync(SavedUserAnswers answers)
+        {
+            await appDbContext.UserAnswers.AddAsync(answers);
+            await appDbContext.SaveChangesAsync();
         }
     }
 }

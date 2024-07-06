@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using PersonalityGuru.Server.Data;
+using PersonalityGuru.Server.Repositories;
 using PersonalityGuru.Shared.Models;
-using PersonalityGuru.Shared.Repository;
 
 namespace PersonalityGuru.Server.Controllers
 {
@@ -24,6 +25,13 @@ namespace PersonalityGuru.Server.Controllers
             CurrentQuestionnaire state = new(userId);
             state.StartTest(questionnaire);
             return state;
+        }
+
+        [HttpPost("{userId}/questionnaire/{questionnaireId}/complete")]
+        public async Task CompleteQuestionnaire(string userId, int questionnaireId, [FromBody] Dictionary<int, AnswerOption> answers)
+        {
+            SavedUserAnswers userAnswers = new(userId, questionnaireId, answers);
+            await questionnaireRepository.SaveUserAnswersAsync(userAnswers);
         }
     }
 }

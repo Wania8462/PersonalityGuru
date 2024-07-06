@@ -1,0 +1,11 @@
+﻿using PersonalityGuru.Server.Data;
+using PersonalityGuru.Shared.Models;
+
+namespace PersonalityGuru.Server.Repositories;
+
+public interface IQuestionnaireRepository
+{
+    Task<Questionnaire> GetQuestionnaireAsync(int id);
+
+    Task SaveUserAnswersAsync(SavedUserAnswers answers);
+}

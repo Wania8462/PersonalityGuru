@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PersonalityGuru.Server.Data;
@@ -11,6 +13,8 @@ namespace PersonalityGuru.Server
         public DbSet<Questionnaire> Tests { get; set; }
 
         public DbSet<Question> Questions { get; set; }
+
+        public DbSet<SavedUserAnswers> UserAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +36,13 @@ namespace PersonalityGuru.Server
                 new Question { Id = 9, Text = "Я часто прокручиваю в голове слова людей, которые меня задели", Group = "Н", TestId = 1 },
                 new Question { Id = 10, Text = "Я часто представляю худший сценарий", Group = "Н", TestId = 1 }
             );
+
+            var options = new JsonSerializerOptions(JsonSerializerDefaults.General);
+            modelBuilder.Entity<SavedUserAnswers>()
+                .Property(b => b.Answers)
+                .HasConversion(
+                    a => JsonSerializer.Serialize(a.OrderBy(k => k.Key).ToArray(), options),
+                    v => JsonSerializer.Deserialize<Dictionary<int, AnswerOption>>(v, options)!);
         }
     }
 

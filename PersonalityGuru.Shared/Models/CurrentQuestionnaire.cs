@@ -14,14 +14,14 @@ namespace PersonalityGuru.Shared.Models
         
         public string UserName { get; set; }
         public Questionnaire CurrentTest { get; set; }
-        public List<Answers> CurrentAnswers { get; set; }
+        public UserAnswers CurrentAnswers { get; set; }
 
         private int nextQuestion = 0;
  
         public void StartTest(Questionnaire questionnaire) {
             //TODO: Randimaze questions
             CurrentTest = questionnaire;
-            CurrentAnswers = [];
+            CurrentAnswers = new(UserName, questionnaire.Id);
             nextQuestion = 0;
         }
 
@@ -41,12 +41,13 @@ namespace PersonalityGuru.Shared.Models
         }
 
         public void SaveAnswer(Question question, AnswerOption userAnswer) {
-            Answers answer = new(
-                UserName,
-                CurrentTest.Id,
-                question.Id,
-                userAnswer);
-            CurrentAnswers.Add(answer);
+            if (CurrentAnswers.Answers.ContainsKey(question.Id))
+            {
+                CurrentAnswers.Answers[question.Id] = userAnswer;
+            }
+            else {
+                CurrentAnswers.Answers.Add(question.Id, userAnswer);
+            }
         }
     }
 }
