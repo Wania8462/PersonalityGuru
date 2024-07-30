@@ -1,6 +1,7 @@
 ﻿@page "/start"
 
 @using System.Text.Json
+@using Blazored.LocalStorage
 @using Microsoft.AspNetCore.Authorization
 @using PersonalityGuru.Shared
 @using PersonalityGuru.Shared.Models
@@ -9,7 +10,7 @@
 @inject NavigationManager NavManager
 @inject HttpClient client
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject ClientUserState userState
+@inject ILocalStorageService LocalStorage
 
 
 @attribute [Authorize]
@@ -35,6 +36,7 @@
 </AuthorizeView>
 
 @code {
+
     private async Task StartQuestionnaire()
     {
         var userId = await GetUserId();
@@ -50,8 +52,10 @@
             PropertyNameCaseInsensitive = true,
 
         };
-        CurrentQuestionnaire? current = JsonSerializer.Deserialize<CurrentQuestionnaire>(json, options);
+        CurrentQuestionnaire current = JsonSerializer.Deserialize<CurrentQuestionnaire>(json, options)!;
+        var userState = new ClientUserState();
         userState.CurrentQuestionnaire = current;
+        await LocalStorage.SetItemAsync("userState", userState);
         NavManager.NavigateTo("/question");
     }
 

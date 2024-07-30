@@ -5,8 +5,8 @@ using PersonalityGuru.Components;
 using PersonalityGuru.Components.Account;
 using PersonalityGuru.Server.Data;
 using PersonalityGuru.Server;
-using PersonalityGuru.Components;
 using PersonalityGuru.Shared;
+using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +16,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
-builder.Services.AddSingleton<ClientUserState>();
 
 builder.Services.AddAuthentication(options =>
     {

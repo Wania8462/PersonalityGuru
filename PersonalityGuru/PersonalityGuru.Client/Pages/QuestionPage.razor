@@ -2,22 +2,16 @@
 
 @rendermode InteractiveAuto
 @inject NavigationManager NavManager
-@inject ClientUserState userState
+@inject ILocalStorageService LocalStorage
 
+@using Blazored.LocalStorage
 @using PersonalityGuru.Shared
 @using PersonalityGuru.Shared.Models
+@using PersonalityGuru;
 
 <head>
     <PageTitle>Question page</PageTitle>
 </head>
-
-<div class="navbar bg-dark">
-    <div class="container-fluid">
-        <span class="navbar-text text-white">
-            <a class="navbar-brand text-white" href="/">Home page</a>
-        </span>
-    </div>
-</div>
 
 <div class="d-flex flex-column min-vw-100" style="min-height: 93vh">
     <div class="row d-flex align-middle flex-grow-1">
@@ -84,31 +78,30 @@
     private int currentQuestion;
     private int questonniareLength;
 
-    //[CascadingParameter]
-    //public HttpContext? HttpContext { get; set; }
-
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //bool firstRender = !(HttpContext is null);
-        //if (firstRender)
-        //    return;
-
-        state = userState.CurrentQuestionnaire;
-
-        if (state == null)
+        if (firstRender)
         {
-            NavManager.NavigateTo("/");
-            return;
-        }
+            var userState = await LocalStorage.GetItemAsync<ClientUserState>("userState");
+            state = userState?.CurrentQuestionnaire;
 
-        question = state.GetNextQuestion();
-        QuestionText = question.Text;
-        currentQuestion = question.Id;
-        questonniareLength = state.CurrentTest.Questions.Count;
+            if (state == null)
+            {
+                NavManager.NavigateTo("/");
+                return;
+            }
+
+            question = state.GetNextQuestion();
+            QuestionText = question.Text;
+            currentQuestion = question.Id;
+            questonniareLength = state.CurrentTest.Questions.Count;
+            StateHasChanged();
+        }
     }
 
     private void NextQuestion()
     {
+        Console.WriteLine("Click");
         if (answer != AnswerOption.None)
         {
             if (state.SeeNextQuestion() != null)
@@ -125,6 +118,4 @@
     }
 
     private void SelectOption(AnswerOption option) => answer = option;
-
-    private void ToHomePage() => NavManager.NavigateTo("/");
 }
