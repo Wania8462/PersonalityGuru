@@ -14,7 +14,9 @@ namespace PersonalityGuru.Server
 
         public DbSet<Question> Questions { get; set; }
 
-        public DbSet<SavedUserAnswers> UserAnswers { get; set; }
+        public DbSet<UserTestSession> UserTestSessions { get; set; }
+
+        public DbSet<UserTestAnswer> UserTestAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,13 +38,6 @@ namespace PersonalityGuru.Server
                 new Question { Id = 9, Text = "Я часто прокручиваю в голове слова людей, которые меня задели", Group = "Н", TestId = 1 },
                 new Question { Id = 10, Text = "Я часто представляю худший сценарий", Group = "Н", TestId = 1 }
             );
-
-            var options = new JsonSerializerOptions(JsonSerializerDefaults.General);
-            modelBuilder.Entity<SavedUserAnswers>()
-                .Property(b => b.Answers)
-                .HasConversion(
-                    a => JsonSerializer.Serialize(a.OrderBy(k => k.Key).ToArray(), options),
-                    a => JsonSerializer.Deserialize<KeyValuePair<int, AnswerOption>[]>(a, options)!.ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
     }
 

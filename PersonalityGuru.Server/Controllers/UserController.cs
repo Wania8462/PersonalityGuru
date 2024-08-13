@@ -29,6 +29,19 @@ namespace PersonalityGuru.Server.Controllers
             return state;
         }
 
+        [HttpPost("{userId}/questionnaire/{testSessionId}/storeAnswer/{questionId}")]
+        public async Task StoreUserAnswer(string userId, int testSessionId, int questionId, [FromBody] AnswerOption answer)
+        {
+            // SavedUserAnswers userAnswers = new(userId, questionnaireId, answers);
+            // await questionnaireRepository.SaveUserAnswersAsync(userAnswers);
+        }
+
+        [HttpGet("{userId}/questionnaire/{testSessionId}/nextQuestion")]
+        public async Task<NextQuestion> GetNextQuestion(string userId, int questionnaireId)
+        {
+            return new NextQuestion(); // await questionnaireRepository.GetAllUserAnswersAsync(userId, questionnaireId);
+        }
+
         [HttpPost("{userId}/questionnaire/{questionnaireId}/complete")]
         public async Task CompleteQuestionnaire(string userId, int questionnaireId, [FromBody] Dictionary<int, AnswerOption> answers)
         {
