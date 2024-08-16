@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PersonalityGuru.Shared.Models
 {
-    public class UserAnswers
+    public class UserTestSession
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string UserId { get; init; }
         public int QuestionnaireId { get; init; }
-        public Dictionary<int, AnswerOption> Answers { get; init; }
 
-        public UserAnswers(string userId, int questionnaireId, Dictionary<int, AnswerOption>? answers = null)
+        public DateTime StartedAt { get; set; } = DateTime.UtcNow;
+
+        public DateTime? CompletedAt { get; set; }
+
+        public TestSessionState State { get; set; } = TestSessionState.InProgress;
+        
+        public UserTestSession(string userId, int questionnaireId)
         {
             UserId = userId;
             QuestionnaireId = questionnaireId;
-            Answers = answers ?? new Dictionary<int, AnswerOption>();
         }
     }
 }

@@ -15,18 +15,34 @@ namespace PersonalityGuru.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly IQuestionnaireRepository questionnaireRepository;
-        public UserController(IQuestionnaireRepository questionnaireRepository)
+        private readonly IUserTestSessionRepository userTestSessionRepository;
+        public UserController(
+            IQuestionnaireRepository questionnaireRepository,
+            IUserTestSessionRepository userTestSessionRepository
+        )
         {
             this.questionnaireRepository = questionnaireRepository;
+            this.userTestSessionRepository = userTestSessionRepository;
         }
 
         [HttpPost("{userId}/questionnaire/{questionnaireId}/start")]
-        public async Task<CurrentQuestionnaire> StartQuestionnaire(string userId, int questionnaireId)
+        public async Task<Guid> StartQuestionnaire(string userId, int questionnaireId)
         {
-            Questionnaire questionnaire =  await questionnaireRepository.GetQuestionnaireAsync(questionnaireId);
-            CurrentQuestionnaire state = new(userId);
-            state.StartTest(questionnaire);
-            return state;
+            var session = await userTestSessionRepository.StartUserTestSessionAsync(userId, questionnaireId);
+            return session.Id;
+        }
+
+        [HttpPost("{userId}/questionnaire/{testSessionId}/storeAnswer/{questionId}")]
+        public async Task StoreUserAnswer(string userId, int testSessionId, int questionId, [FromBody] AnswerOption answer)
+        {
+            // SavedUserAnswers userAnswers = new(userId, questionnaireId, answers);
+            // await questionnaireRepository.SaveUserAnswersAsync(userAnswers);
+        }
+
+        [HttpGet("{userId}/questionnaire/{testSessionId}/nextQuestion")]
+        public async Task<NextQuestion> GetNextQuestion(string userId, int questionnaireId)
+        {
+            return new NextQuestion(); // await questionnaireRepository.GetAllUserAnswersAsync(userId, questionnaireId);
         }
 
         [HttpPost("{userId}/questionnaire/{questionnaireId}/complete")]
