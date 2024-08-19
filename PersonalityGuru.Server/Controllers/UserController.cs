@@ -26,23 +26,40 @@ namespace PersonalityGuru.Server.Controllers
         }
 
         [HttpPost("{userId}/questionnaire/{questionnaireId}/start")]
-        public async Task<Guid> StartQuestionnaire(string userId, int questionnaireId)
+        public async Task<string> StartQuestionnaire(string userId, int questionnaireId)
         {
             var session = await userTestSessionRepository.StartUserTestSessionAsync(userId, questionnaireId);
-            return session.Id;
+            return session.Id.ToString();
         }
 
         [HttpPost("{userId}/questionnaire/{testSessionId}/storeAnswer/{questionId}")]
-        public async Task StoreUserAnswer(string userId, int testSessionId, int questionId, [FromBody] AnswerOption answer)
+        public async Task StoreUserAnswer(string userId, Guid testSessionId, int questionId, [FromBody] AnswerOption answer)
         {
-            // SavedUserAnswers userAnswers = new(userId, questionnaireId, answers);
-            // await questionnaireRepository.SaveUserAnswersAsync(userAnswers);
+            await userTestSessionRepository.StoreUserAnswer(testSessionId, questionId, answer);
         }
 
         [HttpGet("{userId}/questionnaire/{testSessionId}/nextQuestion")]
-        public async Task<NextQuestion> GetNextQuestion(string userId, int questionnaireId)
+        public async Task<NextQuestion?> GetNextQuestion(string userId, string testSessionId)
         {
-            return new NextQuestion(); // await questionnaireRepository.GetAllUserAnswersAsync(userId, questionnaireId);
+            NextQuestion question = new();
+            var id = Guid.Parse(testSessionId);
+            var session = await userTestSessionRepository.GetTestSessionAsync(id);
+            var answers = await userTestSessionRepository.GetUserAnswers(id);
+            Questionnaire questionnaire = await questionnaireRepository.GetQuestionnaireAsync(session.QuestionnaireId);
+
+            if (questionnaire.Questions.Count == answers.Count)
+            {
+                return null;
+            }
+
+            var q = questionnaire.Questions[answers.Count];
+            return new NextQuestion
+            {
+                Id = q.Id,
+                Text = q.Text,
+                AllQuestionsCount = questionnaire.Questions.Count,
+                AnsweredQuestionsCount = answers.Count
+            };
         }
 
         [HttpPost("{userId}/questionnaire/{questionnaireId}/complete")]

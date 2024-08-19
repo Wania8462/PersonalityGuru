@@ -1,13 +1,16 @@
-﻿@page "/question"
+﻿@page "/question/{sessionId}"
 
 @rendermode InteractiveAuto
 @inject NavigationManager NavManager
 @inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient client
 
 @using Blazored.LocalStorage
 @using PersonalityGuru.Shared
 @using PersonalityGuru.Shared.Models
 @using PersonalityGuru;
+@using System.Security.Claims
 
 <head>
     <PageTitle>Question page</PageTitle>
@@ -58,7 +61,7 @@
                     </div>
                 </div>
 
-                <button class="btn btn-success" @onclick="NextQuestion">Слейдущий вопрос</button>
+                <!--<button class="btn btn-success" @onclick="NextQuestion">Слейдущий вопрос</button>-->
             </div>
         </div>
         <div class="col-3 d-flex justify-content-end">
@@ -71,10 +74,11 @@
     public int id { get; set; }
     public string QuestionText { get; set; }
 
+    [Parameter]
+    public string SessionId { get; set; }
+
     private AnswerOption answer = AnswerOption.None;
-    private CurrentQuestionnaire? state = null;
     private Question? question;
-    private string userId = "TODOProvideUserId";
     private int currentQuestion;
     private int questonniareLength;
 
@@ -82,40 +86,62 @@
     {
         if (firstRender)
         {
-            var userState = await LocalStorage.GetItemAsync<ClientUserState>("userState");
-            state = userState?.CurrentQuestionnaire;
 
-            if (state == null)
-            {
-                NavManager.NavigateTo("/");
-                return;
-            }
-
-            question = state.GetNextQuestion();
-            QuestionText = question.Text;
-            currentQuestion = question.Id;
-            questonniareLength = state.CurrentTest.Questions.Count;
-            StateHasChanged();
         }
     }
 
-    private void NextQuestion()
+    private async Task<UserTestSession> GetNextQuestion()
     {
-        Console.WriteLine("Click");
-        if (answer != AnswerOption.None)
-        {
-            if (state.SeeNextQuestion() != null)
-            {
-                state.SaveAnswer(question, answer);
-                NavManager.NavigateTo(NavManager.Uri, true);
-            }
+        string userId = await GetUserId();
+        var request = new HttpRequestMessage(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{SessionId}/nextQuestion");
+        request.Headers.Add("Origin", "https://localhost:7165");
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+         
+    }   
 
-            else
-            {
-                NavManager.NavigateTo("/result");
-            }
-        }
+    private async Task<string?> GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var all = user?.Claims.Select(x => new { x.Type, x.Value }).ToList();
+        return user?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
     }
 
     private void SelectOption(AnswerOption option) => answer = option;
+
+    /*
+        var userState = await LocalStorage.GetItemAsync<ClientUserState>("userState");
+        state = userState?.CurrentQuestionnaire;
+
+        if (state == null)
+            {
+            NavManager.NavigateTo("/");
+        return;
+        }
+
+        question = state.GetNextQuestion();
+        QuestionText = question.Text;
+        currentQuestion = question.Id;
+        questonniareLength = state.CurrentTest.Questions.Count;
+        StateHasChanged();
+
+        private void NextQuestion()
+        {
+            Console.WriteLine("Click");
+            if (answer != AnswerOption.None)
+            {
+                if (state.SeeNextQuestion() != null)
+                {
+                    state.SaveAnswer(question, answer);
+                    NavManager.NavigateTo(NavManager.Uri, true);
+                }
+
+                else
+                {
+                    NavManager.NavigateTo("/result");
+                }
+            }
+        }
+    */
 }
