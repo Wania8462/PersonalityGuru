@@ -24,9 +24,12 @@ namespace PersonalityGuru.Server.Repositories
             return await appDbContext.UserTestSessions.FindAsync(testSessionId);
         }
 
-        public async Task CompleteUserTestSessionAsync(UserTestSession userTestSession)
+        public async Task CompleteUserTestSessionAsync(Guid testSessionId)
         {
-            throw new NotImplementedException();
+            var session = await appDbContext.UserTestSessions.FindAsync(testSessionId);
+            session.State = TestSessionState.Completed;
+            session.CompletedAt = DateTime.UtcNow;
+            await appDbContext.SaveChangesAsync();
         }
 
         public async Task<List<UserTestAnswer>> GetUserAnswers(Guid testSessionId)

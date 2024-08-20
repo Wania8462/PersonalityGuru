@@ -7,7 +7,7 @@ public interface IUserTestSessionRepository
 {
     Task<UserTestSession> StartUserTestSessionAsync(string userId, int questionnaireId);
     Task<UserTestSession> GetTestSessionAsync(Guid testSessionId);
-    Task CompleteUserTestSessionAsync(UserTestSession userTestSession);
+    Task CompleteUserTestSessionAsync(Guid testSessionIdn);
     Task StoreUserAnswer(Guid testSessionId, int questionId, AnswerOption answer);
     Task<List<UserTestAnswer>> GetUserAnswers(Guid testSessionId);
 }

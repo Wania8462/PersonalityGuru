@@ -62,11 +62,11 @@ namespace PersonalityGuru.Server.Controllers
             };
         }
 
-        [HttpPost("{userId}/questionnaire/{questionnaireId}/complete")]
-        public async Task CompleteQuestionnaire(string userId, int questionnaireId, [FromBody] Dictionary<int, AnswerOption> answers)
+        [HttpPost("{userId}/questionnaire/{testSessionId}/complete")]
+        public async Task CompleteQuestionnaire(string userId, string testSessionId)
         {
-            SavedUserAnswers userAnswers = new(userId, questionnaireId, answers);
-            await questionnaireRepository.SaveUserAnswersAsync(userAnswers);
+            var id = Guid.Parse(testSessionId);
+            await userTestSessionRepository.CompleteUserTestSessionAsync(id);
         }
 
         [HttpGet("{userId}/questionnaire/{questionnaireId}/results/last")]

@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+.DS_Store
+PersonalityGuru/.DS_Store
+PersonalityGuru/PersonalityGuru/appsettings.json
+PersonalityGuru.Server/appsettings.json
