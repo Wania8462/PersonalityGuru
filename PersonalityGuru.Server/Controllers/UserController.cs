@@ -41,7 +41,6 @@ namespace PersonalityGuru.Server.Controllers
         [HttpGet("{userId}/questionnaire/{testSessionId}/nextQuestion")]
         public async Task<NextQuestion?> GetNextQuestion(string userId, string testSessionId)
         {
-            NextQuestion question = new();
             var id = Guid.Parse(testSessionId);
             var session = await userTestSessionRepository.GetTestSessionAsync(id);
             var answers = await userTestSessionRepository.GetUserAnswers(id);
@@ -52,7 +51,16 @@ namespace PersonalityGuru.Server.Controllers
                 return null;
             }
 
-            var q = questionnaire.Questions[answers.Count];
+            // randomize questions order
+            Random r = new Random();
+            int next = r.Next(questionnaire.Questions.Count);
+            var answeredQuestions = answers.Select(a => a.QuestionId).ToHashSet();
+            while (answeredQuestions.Contains(next))
+            {
+                next = (next + 1) % questionnaire.Questions.Count;
+            }
+
+            var q = questionnaire.Questions[next];
             return new NextQuestion
             {
                 Id = q.Id,
