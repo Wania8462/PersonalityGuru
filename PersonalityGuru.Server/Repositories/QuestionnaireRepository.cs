@@ -12,6 +12,9 @@ namespace PersonalityGuru.Server.Repositories
     public class QuestionnaireRepository : IQuestionnaireRepository
     {
         private readonly ApplicationDbContext appDbContext;
+
+        private static readonly Dictionary<int, Questionnaire> _cache = new();
+
         public QuestionnaireRepository(ApplicationDbContext appDbContext)
         {
             this.appDbContext = appDbContext;
@@ -19,9 +22,15 @@ namespace PersonalityGuru.Server.Repositories
 
         public async Task<Questionnaire> GetQuestionnaireAsync(int id)
         {
-            return await appDbContext.Tests
-                .Include(q => q.Questions)
-                .FirstAsync(t => t.Id == id);
+            if (!_cache.ContainsKey(id))
+            {
+                var q = await appDbContext.Tests
+                        .Include(q => q.Questions)
+                        .FirstAsync(t => t.Id == id);
+                _cache[id] = q;
+            }
+
+            return _cache[id];
         }
 
         public async Task SaveUserAnswersAsync(SavedUserAnswers answers)
