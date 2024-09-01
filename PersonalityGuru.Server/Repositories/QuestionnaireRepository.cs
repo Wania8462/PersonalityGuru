@@ -41,23 +41,20 @@ namespace PersonalityGuru.Server.Repositories
 
         public async Task<SavedUserAnswers?> GetLastUserAnswersAsync(string userId, int questionnaireId)
         {
-            Dictionary<int, AnswerOption> answerOptions = [];
-            List<UserTestAnswer> answers = (List<UserTestAnswer>)appDbContext.UserTestAnswers
+            Dictionary<int, AnswerOption> answers = appDbContext.UserTestAnswers
+                .Include(ua => ua.UserTestSession)
                 .Where(ua => ua.UserTestSession.UserId == userId && ua.UserTestSession.QuestionnaireId == questionnaireId)
-                .ToList();
+                .ToDictionary(ua => ua.QuestionId, ua => ua.AnswerOption);
 
-            foreach (UserTestAnswer answer in answers)
-                answerOptions.Add(answer.QuestionId, answer.AnswerOption);
+            if (answers.Count == 0) {
+                return null;
+            }
 
-            return new SavedUserAnswers(userId, questionnaireId, answerOptions);
-        }
-
-        public async Task<List<SavedUserAnswers>> GetAllUserAnswersAsync(string userId, int questionnaireId)
-        {
-            return new List<SavedUserAnswers>();
-            // return await appDbContext.UserAnswers
-            //     .Where(ua => ua.UserId == userId && ua.QuestionnaireId == questionnaireId)
-            //     .ToListAsync();
+            // TODO:
+            // get questionnaire using GetQuestionnaireAsync() method
+            // calculate averages for each group
+            // update SavedUserAnswers data model to include averages instead of just answers
+            return new SavedUserAnswers(userId, questionnaireId, answers);
         }
     }
 }

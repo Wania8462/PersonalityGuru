@@ -1,9 +1,6 @@
-﻿using System.Net;
-using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using PersonalityGuru.Server.Data;
 using PersonalityGuru.Server.Repositories;
 using PersonalityGuru.Shared.Models;
 
@@ -89,12 +86,6 @@ namespace PersonalityGuru.Server.Controllers
             }
 
             return TypedResults.Ok(lastAnswer);
-        }
-
-        [HttpGet("{userId}/questionnaire/{questionnaireId}/results/all")]
-        public async Task<List<SavedUserAnswers>> GetAllUserAnswers(string userId, int questionnaireId)
-        {
-            return await questionnaireRepository.GetAllUserAnswersAsync(userId, questionnaireId);
         }
     }
 }

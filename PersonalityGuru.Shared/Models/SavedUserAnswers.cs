@@ -9,8 +9,6 @@ namespace PersonalityGuru.Shared.Models
 {
     public class SavedUserAnswers
     {
-        [Key]
-        public int Id { get; set; }
         public string UserId { get; init; }
         public int QuestionnaireId { get; init; }
         public DateTime CompletedAt { get; set; }
@@ -18,7 +16,6 @@ namespace PersonalityGuru.Shared.Models
 
         public SavedUserAnswers(string userId, int questionnaireId, Dictionary<int, AnswerOption> answers)
         {
-            Id = 0; // EF will set this
             UserId = userId;
             QuestionnaireId = questionnaireId;
             Answers = answers;

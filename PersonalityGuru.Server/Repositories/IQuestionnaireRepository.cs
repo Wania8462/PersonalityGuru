@@ -10,6 +10,4 @@ public interface IQuestionnaireRepository
     Task SaveUserAnswersAsync(SavedUserAnswers answers);
 
     Task<SavedUserAnswers?> GetLastUserAnswersAsync(string userId, int questionnaireId);
-
-    Task<List<SavedUserAnswers>> GetAllUserAnswersAsync(string userId, int questionnaireId);
 }
