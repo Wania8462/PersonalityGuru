@@ -11,6 +11,7 @@
 @using PersonalityGuru.Shared.Models
 @using PersonalityGuru;
 @using System.Security.Claims
+@using System.Text.Json
 
 <head>
     <PageTitle>Question page</PageTitle>
@@ -61,7 +62,7 @@
                     </div>
                 </div>
 
-                <!--<button class="btn btn-success" @onclick="NextQuestion">Слейдущий вопрос</button>-->
+                <button class="btn btn-success" @onclick="NextQuestion">Слейдущий вопрос</button>
             </div>
         </div>
         <div class="col-3 d-flex justify-content-end">
@@ -72,33 +73,60 @@
 
 @code {
     public int id { get; set; }
-    public string QuestionText { get; set; }
+    private string QuestionText;
 
     [Parameter]
     public string SessionId { get; set; }
 
     private AnswerOption answer = AnswerOption.None;
-    private Question? question;
+    private NextQuestion? question;
     private int currentQuestion;
     private int questonniareLength;
+    private int questionId;
+    private string userId;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            userId = await GetUserId();
+            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/questionnaire/{SessionId}/nextQuestion");
+            request.Headers.Add("Origin", "https://localhost:7165");
+            HttpResponseMessage response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
 
+            if (string.IsNullOrEmpty(json))
+            {
+                HttpRequestMessage requestC = new(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{SessionId}/complete");
+                requestC.Headers.Add("Origin", "https://localhost:7165");
+                request.Content = new StringContent($"{{}}", null, "application/json");
+                HttpResponseMessage responseC = await client.SendAsync(requestC);
+                responseC.EnsureSuccessStatusCode();
+                // TODO: questionnaire id
+                NavManager.NavigateTo("/result/1");
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            question = JsonSerializer.Deserialize<NextQuestion>(json, options);
+
+            questionId = question.Id;
+            QuestionText = question.Text;
+            currentQuestion = question.Id;
+            questonniareLength = question.AllQuestionsCount;
+            StateHasChanged();
         }
     }
 
-    private async Task<UserTestSession> GetNextQuestion()
+    private async Task NextQuestion()
     {
-        string userId = await GetUserId();
-        var request = new HttpRequestMessage(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{SessionId}/nextQuestion");
+        HttpRequestMessage request = new(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{SessionId}/storeAnswer/{questionId}");
         request.Headers.Add("Origin", "https://localhost:7165");
-        var response = await client.SendAsync(request);
+        request.Content = new StringContent($"{{\"answer\": {((int)answer).ToString()}}}", null, "application/json");
+        HttpResponseMessage response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
-         
-    }   
+        NavManager.NavigateTo("/question/" + SessionId, true);
+    }
 
     private async Task<string?> GetUserId()
     {
@@ -109,39 +137,4 @@
     }
 
     private void SelectOption(AnswerOption option) => answer = option;
-
-    /*
-        var userState = await LocalStorage.GetItemAsync<ClientUserState>("userState");
-        state = userState?.CurrentQuestionnaire;
-
-        if (state == null)
-            {
-            NavManager.NavigateTo("/");
-        return;
-        }
-
-        question = state.GetNextQuestion();
-        QuestionText = question.Text;
-        currentQuestion = question.Id;
-        questonniareLength = state.CurrentTest.Questions.Count;
-        StateHasChanged();
-
-        private void NextQuestion()
-        {
-            Console.WriteLine("Click");
-            if (answer != AnswerOption.None)
-            {
-                if (state.SeeNextQuestion() != null)
-                {
-                    state.SaveAnswer(question, answer);
-                    NavManager.NavigateTo(NavManager.Uri, true);
-                }
-
-                else
-                {
-                    NavManager.NavigateTo("/result");
-                }
-            }
-        }
-    */
 }

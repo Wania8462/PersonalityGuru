@@ -33,11 +33,12 @@ namespace PersonalityGuru.Server.Controllers
         }
 
         [HttpPost("{userId}/questionnaire/{testSessionId}/storeAnswer/{questionId}")]
-        public async Task StoreUserAnswer(string userId, Guid testSessionId, int questionId, [FromBody] AnswerOption answer)
+        public async Task StoreUserAnswer(string userId, Guid testSessionId, int questionId, [FromBody] StoreAnswerRequest request)
         {
-            await userTestSessionRepository.StoreUserAnswer(testSessionId, questionId, answer);
+            await userTestSessionRepository.StoreUserAnswer(testSessionId, questionId, request.Answer);
         }
 
+        // We don't need userId here?
         [HttpGet("{userId}/questionnaire/{testSessionId}/nextQuestion")]
         public async Task<NextQuestion?> GetNextQuestion(string userId, string testSessionId)
         {
