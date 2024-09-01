@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using PersonalityGuru.Shared.Models;
 
-namespace PersonalityGuru.Server.Data
+namespace PersonalityGuru.Shared.Models
 {
     public class SavedUserAnswers
     {

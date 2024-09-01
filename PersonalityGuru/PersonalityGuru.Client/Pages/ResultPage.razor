@@ -1,0 +1,89 @@
+﻿@page "/result/{questionnaireId}"
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient client
+
+@using System.Security.Claims
+@using System.Text.Json
+@using PersonalityGuru.Shared.Models
+
+<h1>Results</h1>
+
+<h2>
+    @O
+    @K
+    @E
+    @A
+    @N
+</h2>
+
+@code {
+    [Parameter]
+    public string questionnaireId { get; set; }
+
+    private int O;
+    private int K;
+    private int E;
+    private int A;
+    private int N;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            string userId = await GetUserId();
+            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/questionnaire/{questionnaireId}/results/last");
+            request.Headers.Add("Origin", "https://localhost:7165");
+            HttpResponseMessage response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+            JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            SavedUserAnswers answers = JsonSerializer.Deserialize<SavedUserAnswers>(json, options);
+
+            request = new(HttpMethod.Get, $"/api/questionnaire/{answers.QuestionnaireId}");
+            request.Headers.Add("Origin", "https://localhost:7165");
+            response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            json = await response.Content.ReadAsStringAsync();
+            Questionnaire questionnaire = JsonSerializer.Deserialize<Questionnaire>(json, options);
+
+            foreach(KeyValuePair<int, AnswerOption> answer in answers.Answers)
+            {
+                switch (questionnaire.Questions[answer.Key].Group)
+                {
+                    case "О":
+                        O += (int)answer.Value;
+                        break;
+                    case "К":
+                        K += (int)answer.Value;
+                        break;
+                    case "Э":
+                        E += (int)answer.Value;
+                        break;
+                    case "А":
+                        A += (int)answer.Value;
+                        break;
+                    case "Н":
+                        N += (int)answer.Value;
+                        break;
+                }
+            }
+
+            O = O / 15;
+            K = K / 15;
+            E = E / 15;
+            A = A / 15;
+            N = N / 15;
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task<string?> GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var all = user?.Claims.Select(x => new { x.Type, x.Value }).ToList();
+        return user?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+    }
+}
