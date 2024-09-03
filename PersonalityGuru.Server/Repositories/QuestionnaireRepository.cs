@@ -46,15 +46,24 @@ namespace PersonalityGuru.Server.Repositories
                 .Where(ua => ua.UserTestSession.UserId == userId && ua.UserTestSession.QuestionnaireId == questionnaireId)
                 .ToDictionary(ua => ua.QuestionId, ua => ua.AnswerOption);
 
-            if (answers.Count == 0) {
+            if (answers.Count == 0)
                 return null;
-            }
 
-            // TODO:
-            // get questionnaire using GetQuestionnaireAsync() method
-            // calculate averages for each group
-            // update SavedUserAnswers data model to include averages instead of just answers
-            return new SavedUserAnswers(userId, questionnaireId, answers);
+            Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
+            Dictionary<string, float> result = [];
+            result.Add("О", 0);
+            result.Add("К", 0);
+            result.Add("Э", 0);
+            result.Add("А", 0);
+            result.Add("Н", 0);
+
+            foreach (KeyValuePair<int, AnswerOption> answer in answers)
+                result[questionnaire.Questions[answer.Key].Group] += (int)answer.Value;
+
+            foreach (string key in result.Keys)
+                result[key] /= 15;
+
+            return new SavedUserAnswers(userId, questionnaireId, result);
         }
     }
 }

@@ -12,14 +12,14 @@ namespace PersonalityGuru.Shared.Models
         public string UserId { get; init; }
         public int QuestionnaireId { get; init; }
         public DateTime CompletedAt { get; set; }
-        public Dictionary<int, AnswerOption> Answers { get; init; }
+        public Dictionary<string, float> Result { get; init; }
 
-        public SavedUserAnswers(string userId, int questionnaireId, Dictionary<int, AnswerOption> answers)
+        public SavedUserAnswers(string userId, int questionnaireId, Dictionary<string, float> result)
         {
             UserId = userId;
             QuestionnaireId = questionnaireId;
-            Answers = answers;
             CompletedAt = DateTime.Now;
+            Result = result;
         }
     }
 }
