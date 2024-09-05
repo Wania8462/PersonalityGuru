@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PersonalityGuru.Server.Data;
+using PersonalityGuru.Server.Migrations;
 using PersonalityGuru.Shared.Models;
 
 namespace PersonalityGuru.Server.Repositories
@@ -41,17 +42,41 @@ namespace PersonalityGuru.Server.Repositories
 
         public async Task<SavedUserAnswers?> GetLastUserAnswersAsync(string userId, int questionnaireId)
         {
-            Dictionary<int, AnswerOption> answers = appDbContext.UserTestAnswers
+            // Getting answers from all time
+            IQueryable<UserTestAnswer> userTestAnswers = appDbContext.UserTestAnswers
                 .Include(ua => ua.UserTestSession)
-                .Where(ua => ua.UserTestSession.UserId == userId && ua.UserTestSession.QuestionnaireId == questionnaireId)
+                .Where(ua => ua.UserTestSession.UserId == userId
+                             && ua.UserTestSession.QuestionnaireId == questionnaireId);
+
+            DateTime? lastTime = userTestAnswers
+                .Include(ua => ua.UserTestSession)
+                .Max(ua => ua.UserTestSession.CompletedAt);
+
+            if (lastTime == null)
+                return null;
+
+            Dictionary<int, AnswerOption> answers = userTestAnswers
+                .Include(ua => ua.UserTestSession)
+                .Where(ua => ua.UserTestSession.CompletedAt == lastTime)
                 .ToDictionary(ua => ua.QuestionId, ua => ua.AnswerOption);
 
-            if (answers.Count == 0)
-                return null;
+            // Testing
+            //List<UserTestAnswer> answers = userTestAnswers
+            //    .Include(ua => ua.UserTestSession)
+            //    .Where(ua => ua.UserTestSession.CompletedAt == lastTime).ToList();
+
+            //List<int> ids = new List<int>();
+
+            //foreach (UserTestAnswer answer in answers)
+            //{
+            //    ids.Add(answer.QuestionId);
+            //}
+
+            //ids.Sort();
 
             Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
             Dictionary<string, float> result = [];
-            result.Add("О", 0);
+            result.Add("O", 0);
             result.Add("К", 0);
             result.Add("Э", 0);
             result.Add("А", 0);

@@ -9,17 +9,27 @@
 
 <h1>Results</h1>
 
-<h2>
-    @result["О"]
-    @result["К"]
-    @result["Е"]
-    @result["А"]
-    @result["Н"]
-</h2>
+@if (result!=null)
+{
+    <h2>
+        @result["О"]
+        @result["К"]
+        @result["Е"]
+        @result["А"]
+        @result["Н"]
+    </h2>
+}
+    
+else
+{
+    <h2>Oops, something went wrong.</h2>
+}
 
 @code {
     [Parameter]
     public string questionnaireId { get; set; }
+    // [Parameter]
+    // public string userId { get; set; }
 
     private Dictionary<string, float> result;
 
@@ -34,7 +44,8 @@
             response.EnsureSuccessStatusCode();
             string json = await response.Content.ReadAsStringAsync();
             JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            SavedUserAnswers answers = JsonSerializer.Deserialize<SavedUserAnswers>(json, options);
+            SavedUserAnswers? answers = JsonSerializer.Deserialize<SavedUserAnswers>(json, options);
+
             result = answers.Result;
             StateHasChanged();
         }
