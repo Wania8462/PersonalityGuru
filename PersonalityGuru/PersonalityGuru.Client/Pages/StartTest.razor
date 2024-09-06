@@ -27,7 +27,9 @@
                         <h2>Добро пожаловать, @context.User.Identity?.Name!</h2>
                     </div>
                     <div>
-                        <button class="btn btn-primary w-100" width="100%" @onclick="StartQuestionnaire">Начать тест</button>
+                        <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(1)">Начать тест</button>
+                        <h1></h1> <!--Wrong solution-->
+                        <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(2)">Начать тестовый тест</button>
                     </div>
                 </div>
             </div>
@@ -37,12 +39,12 @@
 
 @code {
 
-    private async Task StartQuestionnaire()
+    private async Task StartQuestionnaire(int questionnaireId)
     {
         var userId = await GetUserId();
         if (userId == null) return;
 
-        var request = new HttpRequestMessage(HttpMethod.Post, $"/api/users/{userId}/questionnaire/1/start");
+        var request = new HttpRequestMessage(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{questionnaireId}/start");
         request.Headers.Add("Origin", "https://localhost:7165");
         var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
