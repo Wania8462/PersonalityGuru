@@ -22,7 +22,8 @@ namespace PersonalityGuru.Server
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Questionnaire>().HasData(
-                new Questionnaire { Id = 1, Name = "OKЭАН" }
+                new Questionnaire { Id = 1, Name = "OKЭАН" },
+                new Questionnaire { Id = 2, Name = "TestQuestionnaire" }
             );
 
             modelBuilder.Entity<Question>().HasData(
@@ -100,7 +101,13 @@ namespace PersonalityGuru.Server
                 new Question { Id = 72, Text = "Если я злюсь или расстроен(а), это всегда по мне видно", Group = "Н", TestId = 1 },
                 new Question { Id = 73, Text = "Я сохраняю спокойствие даже под давлением", Group = "Н", InvertedScore = true, TestId = 1 },
                 new Question { Id = 74, Text = "Я склонен(на) описывать происходящее не в свою пользу", Group = "Н", TestId = 1 },
-                new Question { Id = 75, Text = "Я часто подозреваю скрытые мотивы у других", Group = "Н", TestId = 1 }
+                new Question { Id = 75, Text = "Я часто подозреваю скрытые мотивы у других", Group = "Н", TestId = 1 },
+
+                new Question { Id = 101, Text = "Первый вопрос", Group = "O", TestId = 2 },
+                new Question { Id = 102, Text = "Второй вопрос", Group = "К", TestId = 2 },
+                new Question { Id = 103, Text = "Третий вопрос", Group = "Э", TestId = 2 },
+                new Question { Id = 104, Text = "Четвертый вопрос", Group = "А", TestId = 2 },
+                new Question { Id = 105, Text = "Пятый вопрос", Group = "Н", TestId = 2 }
             );
         }
     }

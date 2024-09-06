@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using PersonalityGuru.Server.Data;
-using PersonalityGuru.Server.Migrations;
+﻿using Microsoft.EntityFrameworkCore;
 using PersonalityGuru.Shared.Models;
 
 namespace PersonalityGuru.Server.Repositories
