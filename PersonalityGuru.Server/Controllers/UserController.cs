@@ -53,7 +53,7 @@ namespace PersonalityGuru.Server.Controllers
             Random r = new Random();
             int next = r.Next(questionnaire.Questions.Count);
             var answeredQuestions = answers.Select(a => a.QuestionId).ToHashSet();
-            while (answeredQuestions.Contains(next))
+            while (answeredQuestions.Contains(questionnaire.Questions[next].Id))
             {
                 next = (next + 1) % questionnaire.Questions.Count;
             }
