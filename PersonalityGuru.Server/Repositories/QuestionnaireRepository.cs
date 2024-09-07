@@ -76,7 +76,10 @@ namespace PersonalityGuru.Server.Repositories
             result.Add("Н", 0);
 
             foreach (KeyValuePair<int, AnswerOption> answer in answers)
-                result[questionnaire.Questions[answer.Key].Group] += (int)answer.Value;
+            {
+                Question question = questionnaire.Questions.First(q => q.Id == answer.Key);
+                result[question.Group] += (int)answer.Value;
+            }
 
             foreach (string key in result.Keys)
                 result[key] /= 15;
