@@ -11,13 +11,11 @@
 
 @if (result!=null)
 {
-    <h2>
-        @result["O"]
-        @result["К"]
-        @result["Э"]
-        @result["А"]
-        @result["Н"]
-    </h2>
+    <h2>Открытость: @result["O"]</h2>
+    <h2>Кропотливость: @result["К"]</h2>
+    <h2>Экстраверсия: @result["Э"]</h2>
+    <h2>Аккомодация: @result["А"]</h2>
+    <h2>Невротичность: @result["Н"]</h2>
 }
     
 else
@@ -31,7 +29,7 @@ else
     // [Parameter]
     // public string userId { get; set; }
 
-    private Dictionary<string, float> result;
+    private Dictionary<string, double> result;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

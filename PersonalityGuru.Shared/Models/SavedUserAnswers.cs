@@ -12,9 +12,9 @@ namespace PersonalityGuru.Shared.Models
         public string UserId { get; init; }
         public int QuestionnaireId { get; init; }
         public DateTime CompletedAt { get; set; }
-        public Dictionary<string, float> Result { get; init; }
+        public Dictionary<string, double> Result { get; init; }
 
-        public SavedUserAnswers(string userId, int questionnaireId, Dictionary<string, float> result)
+        public SavedUserAnswers(string userId, int questionnaireId, Dictionary<string, double> result)
         {
             UserId = userId;
             QuestionnaireId = questionnaireId;

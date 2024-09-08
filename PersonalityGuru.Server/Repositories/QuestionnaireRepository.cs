@@ -68,7 +68,7 @@ namespace PersonalityGuru.Server.Repositories
             //ids.Sort();
 
             Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
-            Dictionary<string, float> result = [];
+            Dictionary<string, double> result = [];
             result.Add("O", 0);
             result.Add("К", 0);
             result.Add("Э", 0);
@@ -82,7 +82,10 @@ namespace PersonalityGuru.Server.Repositories
             }
 
             foreach (string key in result.Keys)
+            {
                 result[key] /= 15;
+                result[key] = Math.Round(result[key], 1);
+            }
 
             return new SavedUserAnswers(userId, questionnaireId, result);
         }
