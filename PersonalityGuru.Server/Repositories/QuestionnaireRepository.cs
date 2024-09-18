@@ -53,20 +53,6 @@ namespace PersonalityGuru.Server.Repositories
                 .Where(ua => ua.UserTestSession.CompletedAt == lastTime)
                 .ToDictionary(ua => ua.QuestionId, ua => ua.AnswerOption);
 
-            // Testing
-            //List<UserTestAnswer> answers = userTestAnswers
-            //    .Include(ua => ua.UserTestSession)
-            //    .Where(ua => ua.UserTestSession.CompletedAt == lastTime).ToList();
-
-            //List<int> ids = new List<int>();
-
-            //foreach (UserTestAnswer answer in answers)
-            //{
-            //    ids.Add(answer.QuestionId);
-            //}
-
-            //ids.Sort();
-
             Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
             Dictionary<string, double> result = [];
             result.Add("O", 0);
@@ -77,8 +63,11 @@ namespace PersonalityGuru.Server.Repositories
 
             foreach (KeyValuePair<int, AnswerOption> answer in answers)
             {
-                Question question = questionnaire.Questions.First(q => q.Id == answer.Key);
-                result[question.Group] += (int)answer.Value;
+                if(answer.Key > 0)
+                {
+                    Question question = questionnaire.Questions.First(q => q.Id == answer.Key);
+                    result[question.Group] += (int)answer.Value;
+                }
             }
 
             foreach (string key in result.Keys)
