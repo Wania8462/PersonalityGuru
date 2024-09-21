@@ -49,7 +49,7 @@
         var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         string sessionId = await response.Content.ReadAsStringAsync();
-        NavManager.NavigateTo("/question/" + sessionId);
+        NavManager.NavigateTo("/question/" + sessionId + "/" + questionnaireId);
     }
 
     private void ToHomePage() => NavManager.NavigateTo("/");
