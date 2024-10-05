@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PersonalityGuru.Server.Data;
 using PersonalityGuru.Server.Repositories;
 using PersonalityGuru.Shared.Models;
 
@@ -13,14 +15,48 @@ namespace PersonalityGuru.Server.Controllers
     {
         private readonly IQuestionnaireRepository questionnaireRepository;
         private readonly IUserTestSessionRepository userTestSessionRepository;
+        private readonly IUsersRepository usersRepository;
+
         public UserController(
             IQuestionnaireRepository questionnaireRepository,
-            IUserTestSessionRepository userTestSessionRepository
+            IUserTestSessionRepository userTestSessionRepository,
+            IUsersRepository usersRepository
         )
         {
             this.questionnaireRepository = questionnaireRepository;
             this.userTestSessionRepository = userTestSessionRepository;
+            this.usersRepository = usersRepository;
         }
+
+        #region User
+
+        [HttpGet("all")]
+        public async Task<List<User>> GetAllUsers()
+        {
+            List<ApplicationUser> users = await usersRepository.GetAllUsersAsync();
+            List<User> result = [];
+
+            foreach (var user in users)
+            {
+                SavedUserAnswers? answers = await questionnaireRepository.GetLastUserAnswersAsync(user.Id, 1);
+
+                if (answers != null)
+                {
+                    result.Add(new User(
+                        user.Id,
+                        user.UserName,
+                        user.Email,
+                        answers
+                    ));
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region Questionnaire
 
         [HttpPost("{userId}/questionnaire/{questionnaireId}/start")]
         public async Task<string> StartQuestionnaire(string userId, int questionnaireId)
@@ -35,7 +71,6 @@ namespace PersonalityGuru.Server.Controllers
             await userTestSessionRepository.StoreUserAnswer(testSessionId, questionId, request.Answer);
         }
 
-        // We don't need userId here?
         [HttpGet("{userId}/questionnaire/{testSessionId}/nextQuestion")]
         public async Task<NextQuestion?> GetNextQuestion(string userId, string testSessionId)
         {
@@ -80,12 +115,14 @@ namespace PersonalityGuru.Server.Controllers
         {
             var lastAnswer = await questionnaireRepository.GetLastUserAnswersAsync(userId, questionnaireId);
 
-            if(lastAnswer == null)
+            if (lastAnswer == null)
             {
                 return TypedResults.NotFound();
             }
 
             return TypedResults.Ok(lastAnswer);
         }
+
+        #endregion
     }
 }

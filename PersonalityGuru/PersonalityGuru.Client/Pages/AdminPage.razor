@@ -1,9 +1,61 @@
 ﻿@page "/admin"
 
+@using PersonalityGuru.Shared.Models
+@using System.Text.Json
+
+@inject HttpClient client
+@inject NavigationManager Navigation
+@inject UserManager<ApplicationUser> UserManager
+
+<head>
+    <PageTitle>Question page</PageTitle>
+</head>
+
 <h3>AdminPage</h3>
 
-
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">О</th>
+            <th scope="col">К</th>
+            <th scope="col">Э</th>
+            <th scope="col">А</th>
+            <th scope="col">Н</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(User user in users)
+        {
+            <tr>
+                <th scope="row">@user.FullName</th>
+                <td>@user.Email</td>
+                <td>@user.SavedUserAnswers.Result["O"]</td>
+                <td>@user.SavedUserAnswers.Result["К"]</td>
+                <td>@user.SavedUserAnswers.Result["Э"]</td>
+                <td>@user.SavedUserAnswers.Result["А"]</td>
+                <td>@user.SavedUserAnswers.Result["Н"]</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
+    private List<User> users = new List<User>();
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/all");
+            request.Headers.Add("Origin", "https://localhost:7165");
+            HttpResponseMessage response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+            JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            users = JsonSerializer.Deserialize<List<User>>(json, options);
+            StateHasChanged();
+        }
+    }
 }
