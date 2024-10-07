@@ -44,7 +44,7 @@ namespace PersonalityGuru.Server.Controllers
                 {
                     result.Add(new User(
                         user.Id,
-                        user.UserName,
+                        user.FullName,
                         user.Email,
                         answers
                     ));
