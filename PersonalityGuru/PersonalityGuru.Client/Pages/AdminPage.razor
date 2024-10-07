@@ -5,7 +5,6 @@
 
 @inject HttpClient client
 @inject NavigationManager Navigation
-@inject UserManager<ApplicationUser> UserManager
 
 <head>
     <PageTitle>Question page</PageTitle>
@@ -55,6 +54,7 @@
             string json = await response.Content.ReadAsStringAsync();
             JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             users = JsonSerializer.Deserialize<List<User>>(json, options);
+            json = "fwehjefu";
             StateHasChanged();
         }
     }

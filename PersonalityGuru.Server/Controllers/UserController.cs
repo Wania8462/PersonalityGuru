@@ -38,7 +38,7 @@ namespace PersonalityGuru.Server.Controllers
 
             foreach (var user in users)
             {
-                SavedUserAnswers? answers = await questionnaireRepository.GetLastUserAnswersAsync(user.Id, 1);
+                SavedUserAnswers? answers = await questionnaireRepository.GetLastUserAnswersAsync(user.Id, 2);
 
                 if (answers != null)
                 {
