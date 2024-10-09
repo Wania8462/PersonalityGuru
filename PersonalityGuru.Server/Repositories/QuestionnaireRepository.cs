@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PersonalityGuru.Server.Migrations;
 using PersonalityGuru.Shared.Models;
+using System.Linq;
 
 
 namespace PersonalityGuru.Server.Repositories
@@ -56,6 +58,58 @@ namespace PersonalityGuru.Server.Repositories
                 .ToDictionary(ua => ua.QuestionId, ua => ua.AnswerOption);
 
             Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
+            Dictionary<string, double> result = CalculateAnswers(answers, questionnaire);
+            return new SavedUserAnswers(userId, questionnaireId, (DateTime)lastTime, result);
+        }
+
+        public async Task<List<SavedUserAnswers>> GetAllUserAnswersAsync(string userId, int questionnaireId)
+        {
+            Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
+
+            IQueryable<UserTestAnswer> userTestAnswers = appDbContext.UserTestAnswers
+                .Include(ua => ua.UserTestSession)
+                .Where(ua => ua.UserTestSession.UserId == userId
+                             && ua.UserTestSession.QuestionnaireId == questionnaireId);
+
+            Dictionary<DateTime, Dictionary<int, AnswerOption>> times = [];
+
+            foreach (var uta in userTestAnswers)
+            {
+                DateTime? time = uta.UserTestSession.CompletedAt;
+                if (time != null)
+                {
+                    if (!times.ContainsKey((DateTime)time))
+                    {
+                        Dictionary<int, AnswerOption> answer = new() { { uta.QuestionId, uta.AnswerOption } };
+                        times.Add((DateTime)time, answer);
+                    }
+
+                    else
+                    {
+                        times[(DateTime)time].Add(uta.QuestionId, uta.AnswerOption);
+                    }
+                }
+            }
+
+            List<SavedUserAnswers> result = [];
+
+            foreach(var answers in times)
+            {
+                SavedUserAnswers sua = new(
+                    userId,
+                    questionnaireId,
+                    answers.Key,
+                    CalculateAnswers(answers.Value, questionnaire)
+                );
+
+                result.Add(sua);
+            }
+
+            return result;
+        }
+
+        private Dictionary<string, double> CalculateAnswers(Dictionary<int, AnswerOption> answers, Questionnaire questionnaire)
+        {
             Dictionary<string, double> result = [];
             result.Add("O", 0);
             result.Add("К", 0);
@@ -65,7 +119,7 @@ namespace PersonalityGuru.Server.Repositories
 
             foreach (KeyValuePair<int, AnswerOption> answer in answers)
             {
-                if(answer.Key > 0)
+                if (answer.Key > 0)
                 {
                     Question question = questionnaire.Questions.First(q => q.Id == answer.Key);
                     result[question.Group] += (int)answer.Value;
@@ -78,7 +132,7 @@ namespace PersonalityGuru.Server.Repositories
                 result[key] = Math.Round(result[key], 1);
             }
 
-            return new SavedUserAnswers(userId, questionnaireId, result);
+            return result;
         }
     }
 }

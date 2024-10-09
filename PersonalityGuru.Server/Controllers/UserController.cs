@@ -38,6 +38,7 @@ namespace PersonalityGuru.Server.Controllers
 
             foreach (var user in users)
             {
+                // change questionnaire id?
                 SavedUserAnswers? answers = await questionnaireRepository.GetLastUserAnswersAsync(user.Id, 2);
 
                 if (answers != null)
@@ -121,6 +122,19 @@ namespace PersonalityGuru.Server.Controllers
             }
 
             return TypedResults.Ok(lastAnswer);
+        }
+
+        [HttpGet("{userId}/questionnaire/{questionnaireId}/results")]
+        public async Task<Results<NotFound, Ok<List<SavedUserAnswers>>>> GetAllUserAnswers(string userId, int questionnaireId)
+        {
+            var allAnswers = await questionnaireRepository.GetAllUserAnswersAsync(userId, questionnaireId);
+
+            if (allAnswers == null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            return TypedResults.Ok(allAnswers);
         }
 
         #endregion

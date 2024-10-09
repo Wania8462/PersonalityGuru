@@ -1,0 +1,16 @@
+﻿@page "/admin/{userId}"
+
+<h1></h1>
+
+@code {
+    [Parameter]
+    public string userId { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            
+        }
+    }
+}
