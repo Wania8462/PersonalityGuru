@@ -16,4 +16,10 @@ public class UsersRepository : IUsersRepository
         var users = await appDbContext.Users.ToListAsync();
         return users;
     }
+
+    public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
+    {
+        ApplicationUser? user = await appDbContext.Users.FindAsync(userId);
+        return user;
+    }
 }

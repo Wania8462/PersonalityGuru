@@ -11,9 +11,9 @@ namespace PersonalityGuru.Shared.Models
         public string Id { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
-        public SavedUserAnswers SavedUserAnswers { get; set; }
+        public List<SavedUserAnswers> SavedUserAnswers { get; set; }
 
-        public User(string Id, string FullName, string Email, SavedUserAnswers SavedUserAnswers) 
+        public User(string Id, string FullName, string Email, List<SavedUserAnswers> SavedUserAnswers) 
         {
             this.Id = Id;
             this.FullName = FullName;

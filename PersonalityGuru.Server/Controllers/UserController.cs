@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using PersonalityGuru.Server.Data;
 using PersonalityGuru.Server.Repositories;
 using PersonalityGuru.Shared.Models;
+using System.Threading.Tasks;
 
 namespace PersonalityGuru.Server.Controllers
 {
     [Route("api/users")]
     [ApiController]
     [EnableCors]
-    public class UserController : ControllerBase
+    public class UserController : ControllerBase, IUserController
     {
         private readonly IQuestionnaireRepository questionnaireRepository;
         private readonly IUserTestSessionRepository userTestSessionRepository;
@@ -39,7 +40,7 @@ namespace PersonalityGuru.Server.Controllers
             foreach (var user in users)
             {
                 // change questionnaire id?
-                SavedUserAnswers? answers = await questionnaireRepository.GetLastUserAnswersAsync(user.Id, 2);
+                List<SavedUserAnswers> answers = await questionnaireRepository.GetAllUserAnswersAsync(user.Id, 2);
 
                 if (answers != null)
                 {
@@ -53,6 +54,25 @@ namespace PersonalityGuru.Server.Controllers
             }
 
             return result;
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<Results<NotFound, Ok<User>>> GetUserById(string userId)
+        {
+            ApplicationUser? appUser = await usersRepository.GetUserByIdAsync(userId);
+
+            if (appUser == null)
+                return TypedResults.NotFound();
+
+            List<SavedUserAnswers> answers = await questionnaireRepository.GetAllUserAnswersAsync(appUser.Id, 2);
+            User user = new(
+                appUser.Id,
+                appUser.FullName,
+                appUser.Email,
+                answers
+            );
+
+            return TypedResults.Ok(user);
         }
 
         #endregion
