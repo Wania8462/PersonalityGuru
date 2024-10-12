@@ -31,8 +31,8 @@ namespace PersonalityGuru.Server.Controllers
 
         #region User
 
-        [HttpGet("all")]
-        public async Task<List<User>> GetAllUsers()
+        [HttpGet("all/{questionnaireId}")]
+        public async Task<List<User>> GetAllUsers(int questionnaireId)
         {
             List<ApplicationUser> users = await usersRepository.GetAllUsersAsync();
             List<User> result = [];
@@ -40,7 +40,8 @@ namespace PersonalityGuru.Server.Controllers
             foreach (var user in users)
             {
                 // change questionnaire id?
-                List<SavedUserAnswers> answers = await questionnaireRepository.GetAllUserAnswersAsync(user.Id, 2);
+                List<SavedUserAnswers> answers = await questionnaireRepository.GetAllUserAnswersAsync(user.Id, questionnaireId);
+                answers = answers.OrderByDescending(d => d.CompletedAt).ToList();
 
                 if (answers != null)
                 {
@@ -56,15 +57,16 @@ namespace PersonalityGuru.Server.Controllers
             return result;
         }
 
-        [HttpGet("{userId}")]
-        public async Task<Results<NotFound, Ok<User>>> GetUserById(string userId)
+        [HttpGet("{userId}/{questionnaireId}")]
+        public async Task<Results<NotFound, Ok<User>>> GetUserById(string userId, int questionnaireId)
         {
             ApplicationUser? appUser = await usersRepository.GetUserByIdAsync(userId);
 
             if (appUser == null)
                 return TypedResults.NotFound();
 
-            List<SavedUserAnswers> answers = await questionnaireRepository.GetAllUserAnswersAsync(appUser.Id, 2);
+            List<SavedUserAnswers> answers = await questionnaireRepository.GetAllUserAnswersAsync(appUser.Id, questionnaireId);
+            answers = answers.OrderByDescending(d => d.CompletedAt).ToList();
             User user = new(
                 appUser.Id,
                 appUser.FullName,

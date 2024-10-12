@@ -10,51 +10,104 @@
     <PageTitle>Question page</PageTitle>
 </head>
 
-<h3>AdminPage</h3>
+@if (!loadedUsers)
+{
+    <div class="vh-100 d-flex justify-content-center align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"
+             style="shape-rendering: auto; display: block; background: rgb(255, 255, 255);" width="200" height="200"
+             xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g>
+                <rect fill="#e15b64" height="40" width="15" y="30" x="17.5">
+                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="18;30;30"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="y"></animate>
+                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="64;40;40"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="height"></animate>
+                </rect>
+                <rect fill="#80c667" height="40" width="15" y="30" x="42.5">
+                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                             values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline"
+                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="y"></animate>
+                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                             values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline"
+                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="height"></animate>
+                </rect>
+                <rect fill="#7a64da" height="40" width="15" y="30" x="67.5">
+                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="y"></animate>
+                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="height"></animate>
+                </rect>
+                <g></g>
+            </g>
+        </svg>
+    </div>
+}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">О</th>
-            <th scope="col">К</th>
-            <th scope="col">Э</th>
-            <th scope="col">А</th>
-            <th scope="col">Н</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(User user in users)
-        {
+else
+{
+    <h3>AdminPage</h3>
+
+    <table class="table">
+        <thead>
             <tr>
-                <th scope="row">@user.FullName</th>
-                <td>@user.Email</td>
-                <td>@user.SavedUserAnswers.Result["O"]</td>
-                <td>@user.SavedUserAnswers.Result["К"]</td>
-                <td>@user.SavedUserAnswers.Result["Э"]</td>
-                <td>@user.SavedUserAnswers.Result["А"]</td>
-                <td>@user.SavedUserAnswers.Result["Н"]</td>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Открытость</th>
+                <th scope="col">Кропотливость</th>
+                <th scope="col">Экстроверсия</th>
+                <th scope="col">Аккомодация</th>
+                <th scope="col">Невротичность</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (User user in users)
+            {
+                <tr>
+                    <th scope="row">@user.FullName</th>
+                    <td>@user.Email</td>
+                    @if (user.SavedUserAnswers.Count != 0)
+                    {
+                        <td>@user.SavedUserAnswers[0].Result["O"]</td>
+                        <td>@user.SavedUserAnswers[0].Result["К"]</td>
+                        <td>@user.SavedUserAnswers[0].Result["Э"]</td>
+                        <td>@user.SavedUserAnswers[0].Result["А"]</td>
+                        <td>@user.SavedUserAnswers[0].Result["Н"]</td>
+                    }
+
+                    else
+                    {
+                        <td>null</td>
+                        <td>null</td>
+                        <td>null</td>
+                        <td>null</td>
+                        <td>null</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-    private List<User> users = new List<User>();
+    private List<User> users = [];
+    private bool loadedUsers;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender)
         {
-            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/all");
-            request.Headers.Add("Origin", "https://localhost:7165");
+            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/all/{2}");
+            request.Headers.Add("Origin", "https://localhost:7165");    
             HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string json = await response.Content.ReadAsStringAsync();
             JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             users = JsonSerializer.Deserialize<List<User>>(json, options);
-            json = "fwehjefu";
+            loadedUsers = true;
             StateHasChanged();
         }
     }

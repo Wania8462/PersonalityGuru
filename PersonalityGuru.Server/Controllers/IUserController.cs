@@ -6,8 +6,8 @@ namespace PersonalityGuru.Server.Controllers
 {
     public interface IUserController
     {
-        Task<List<User>> GetAllUsers();
-        Task<Results<NotFound, Ok<User>>> GetUserById(string userId);
+        Task<List<User>> GetAllUsers(int questionnaireId);
+        Task<Results<NotFound, Ok<User>>> GetUserById(string userId, int questionnaireId);
 
         Task<string> StartQuestionnaire(string userId, int questionnaireId);
         Task StoreUserAnswer(string userId, Guid testSessionId, int questionId, [FromBody] StoreAnswerRequest request);
