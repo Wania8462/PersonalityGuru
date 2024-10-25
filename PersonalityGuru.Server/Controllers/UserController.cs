@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PersonalityGuru.Server.Data;
+using PersonalityGuru.Server.Gateways.Email;
 using PersonalityGuru.Server.Repositories;
 using PersonalityGuru.Shared.Models;
-using System.Threading.Tasks;
 
 namespace PersonalityGuru.Server.Controllers
 {
@@ -17,16 +16,19 @@ namespace PersonalityGuru.Server.Controllers
         private readonly IQuestionnaireRepository questionnaireRepository;
         private readonly IUserTestSessionRepository userTestSessionRepository;
         private readonly IUsersRepository usersRepository;
+        private readonly IEmailGateway emailGateway;
 
         public UserController(
             IQuestionnaireRepository questionnaireRepository,
             IUserTestSessionRepository userTestSessionRepository,
-            IUsersRepository usersRepository
+            IUsersRepository usersRepository,
+            IEmailGateway emailGateway
         )
         {
             this.questionnaireRepository = questionnaireRepository;
             this.userTestSessionRepository = userTestSessionRepository;
             this.usersRepository = usersRepository;
+            this.emailGateway = emailGateway;
         }
 
         #region User
@@ -157,6 +159,26 @@ namespace PersonalityGuru.Server.Controllers
             }
 
             return TypedResults.Ok(allAnswers);
+        }
+
+        [HttpPost("sendemail")]
+        public async Task TestSendEmail()
+        {
+            string toEmail = "minko.anton@gmail.com";
+            string toName = "Anton Minko";
+            string subject = $"Результаты теста ОКЭАН для {toName}";
+
+            var builder = new EmailMassageBuilder();
+            string message = await builder.BuildTestResultsMessage(toName, new Dictionary<string, double>
+            {
+                { "O", 0.5 },
+                { "К", 1.52 },
+                { "Э", 2.0 },
+                { "А", 3.5 },
+                { "Н", 4.5 },
+            });
+
+            await emailGateway.SendEmailAsync(toEmail, toName, subject, message);
         }
 
         #endregion
