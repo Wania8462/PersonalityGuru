@@ -17,36 +17,102 @@
 
 <PageTitle>Начать тест</PageTitle>
 
-<AuthorizeView>
-    <div class="d-flex flex-column" style="min-height: 93vh">
-        <div class="d-flex align-middle flex-grow-1">
-            <div class="col-5" />
-            <div class="col-2 d-flex align-items-center justify-content-center">
-                <div>
-                    <div>
-                        <h2>Добро пожаловать, @context.User.Identity?.Name!</h2>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(1)">Начать тест</button>
-                        <h1></h1> 
-                        <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(2)">Начать тестовый тест</button>
+@if (!loadedUser)
+{
+    <div class="vh-100 d-flex justify-content-center align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"
+             style="shape-rendering: auto; display: block; background: rgb(255, 255, 255);" width="200" height="200"
+             xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g>
+                <rect fill="#e15b64" height="40" width="15" y="30" x="17.5">
+                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="18;30;30"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="y"></animate>
+                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="64;40;40"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="height"></animate>
+                </rect>
+                <rect fill="#80c667" height="40" width="15" y="30" x="42.5">
+                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                             values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline"
+                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="y"></animate>
+                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                             values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline"
+                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="height"></animate>
+                </rect>
+                <rect fill="#7a64da" height="40" width="15" y="30" x="67.5">
+                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="y"></animate>
+                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="height"></animate>
+                </rect>
+                <g></g>
+            </g>
+        </svg>
+    </div>
+}
+
+else
+{
+    <AuthorizeView>
+        <div class="position-relative">
+             
+
+            <div class="d-flex flex-column top-50 start-50 translate-middle position-absolute" style="min-height: 93vh">
+                <div class="d-flex align-middle flex-grow-1">
+                    <div class="col-5" />
+                    <div class="col-2 d-flex align-items-center justify-content-center">
+                        <div>
+                            <div>
+                                <h2>Добро пожаловать, @user.FullName</h2>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(1)">Начать тест</button>
+                                <h1></h1>
+                                <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(2)">Начать тестовый тест</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</AuthorizeView>
+    </AuthorizeView>
+}
 
 @code {
+    private User user;
+    private bool loadedUser = false;
+    private string userId;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        userId = await GetUserId();
+        if (userId == null) return;
+
+        if (firstRender)
+        {
+            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/{2}");
+            request.Headers.Add("Origin", "https://localhost:7165");
+            HttpResponseMessage response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+            JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            user = JsonSerializer.Deserialize<User>(json, options);
+            loadedUser = true;
+            StateHasChanged();
+        }
+    }
 
     private async Task StartQuestionnaire(int questionnaireId)
     {
-        var userId = await GetUserId();
+        userId = (userId == null) ? await GetUserId() : userId;
         if (userId == null) return;
 
-        var request = new HttpRequestMessage(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{questionnaireId}/start");
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{questionnaireId}/start");
         request.Headers.Add("Origin", "https://localhost:7165");
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         string sessionId = await response.Content.ReadAsStringAsync();
         NavManager.NavigateTo("/question/" + sessionId + "/" + questionnaireId);
@@ -54,10 +120,11 @@
 
     private void ToHomePage() => NavManager.NavigateTo("/");
 
-    private async Task<string?> GetUserId() {
+    private async Task<string?> GetUserId()
+    {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var all = user?.Claims.Select(x => new { x.Type, x.Value }).ToList();
         return user?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
     }
- }
+}

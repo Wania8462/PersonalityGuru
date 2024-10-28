@@ -93,7 +93,7 @@ else
     {
         if (firstRender)
         {
-            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/{2}");
+            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/{1}");
             request.Headers.Add("Origin", "https://localhost:7165");    
             HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
