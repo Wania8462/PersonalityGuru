@@ -6,14 +6,29 @@
 @using PersonalityGuru.Shared
 @using PersonalityGuru.Shared.Models
 @using System.Security.Claims
+
 @rendermode InteractiveAuto
+
 @inject NavigationManager NavManager
 @inject HttpClient client
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILocalStorageService LocalStorage
 
-
 @attribute [Authorize]
+
+<style>
+    .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+</style>
+
+
 
 <PageTitle>Начать тест</PageTitle>
 
@@ -57,22 +72,20 @@
 else
 {
     <AuthorizeView>
-        <div class="position-relative">
-             
+        <img src="Images/Ocean_img.jpg" alt="Background" class="background-image">
 
-            <div class="d-flex flex-column top-50 start-50 translate-middle position-absolute" style="min-height: 93vh">
-                <div class="d-flex align-middle flex-grow-1">
-                    <div class="col-5" />
-                    <div class="col-2 d-flex align-items-center justify-content-center">
+        <div class="d-flex flex-column " style="min-height: 93vh">
+            <div class="d-flex align-middle flex-grow-1">
+                <div class="col-4" />
+                <div class="col-4 d-flex align-items-center justify-content-center">
+                    <div>
                         <div>
-                            <div>
-                                <h2>Добро пожаловать, @user.FullName</h2>
-                            </div>
-                            <div>
-                                <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(1)">Начать тест</button>
-                                <h1></h1>
-                                <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(2)">Начать тестовый тест</button>
-                            </div>
+                            <h2 class="text-white"><b>Добро пожаловать, @user.FullName</b></h2>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(1)">Начать тест</button>
+                            <h1></h1>
+                            <button class="btn btn-primary w-100" width="100%" @onclick="e => StartQuestionnaire(2)">Начать тестовый тест</button>
                         </div>
                     </div>
                 </div>
