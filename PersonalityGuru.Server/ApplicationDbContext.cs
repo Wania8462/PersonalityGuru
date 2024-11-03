@@ -41,7 +41,7 @@ namespace PersonalityGuru.Server
                 new Question { Id = 12, Text = "Мне тяжело найти себя, определить свое направление", Group = "O", TestId = 1 },
                 new Question { Id = 13, Text = "Я быстро адаптируюсь к новым обстоятельствам, задачам и изменениям", Group = "O", TestId = 1 },
                 new Question { Id = 14, Text = "Я не люблю тратить время на глубокие размышления и филосовствования", Group = "O", InvertedScore = true, TestId = 1 },
-                new Question { Id = 15, Text = "Я всегда выбераю точные специализации и навыки", Group = "O", InvertedScore = true, TestId = 1 },
+                new Question { Id = 15, Text = "Я всегда выбираю точные специализации и навыки", Group = "O", InvertedScore = true, TestId = 1 },
                 new Question { Id = 16, Text = "Я ценю чистоту и порядок по всем", Group = "К", TestId = 1 },
                 new Question { Id = 17, Text = "Я редко читаю что-либо о самоорганизации и менеджменте времени", Group = "К", InvertedScore = true, TestId = 1 },
                 new Question { Id = 18, Text = "Мне свойственны настойчивость, скрупулезность и качество в делах", Group = "К", TestId = 1 },
