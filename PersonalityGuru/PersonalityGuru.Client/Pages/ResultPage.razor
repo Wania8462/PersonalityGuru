@@ -1,4 +1,4 @@
-﻿@page "/result/{questionnaireId}"
+﻿@page "/result/{questionnaireId}/{providedUserId:guid?}"
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient client
@@ -26,8 +26,9 @@ else
 @code {
     [Parameter]
     public string questionnaireId { get; set; }
-    // [Parameter]
-    // public string userId { get; set; }
+    
+    [Parameter]
+    public Guid? providedUserId { get; set; }
 
     private Dictionary<string, double> result;
 
@@ -35,7 +36,7 @@ else
     {
         if (firstRender)
         {
-            string userId = await GetUserId();
+            string userId = (providedUserId?.ToString()) ?? await GetUserId();
             HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/questionnaire/{questionnaireId}/results/last");
             request.Headers.Add("Origin", "https://localhost:7165");
             HttpResponseMessage response = await client.SendAsync(request);
