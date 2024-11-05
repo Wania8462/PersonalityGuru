@@ -1,4 +1,4 @@
-﻿@page "/result/{questionnaireId}/{providedUserId:guid?}"
+﻿@page "/result/{questionnaireId}/{providedUserId:guid?}/{providedSessionId:guid?}"
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient client
@@ -30,6 +30,9 @@ else
     [Parameter]
     public Guid? providedUserId { get; set; }
 
+    [Parameter]
+    public Guid? providedSessionId { get; set; }
+
     private Dictionary<string, double> result;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -37,7 +40,9 @@ else
         if (firstRender)
         {
             string userId = (providedUserId?.ToString()) ?? await GetUserId();
-            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/questionnaire/{questionnaireId}/results/last");
+            string session = providedSessionId?.ToString() ?? "last";
+
+            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/questionnaire/{questionnaireId}/results/{session}");
             request.Headers.Add("Origin", "https://localhost:7165");
             HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();

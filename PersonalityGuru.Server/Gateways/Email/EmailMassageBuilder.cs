@@ -1,16 +1,16 @@
 namespace PersonalityGuru.Server.Gateways.Email
 {
     public class EmailMassageBuilder {
-        public async Task<string> BuildTestResultsMessage(string name, Dictionary<string, double> result) {
+        public async Task<string> BuildTestResultsMessage(string userName, Dictionary<string, double> results, string url) {
             var template = await File.ReadAllTextAsync("./Resources/TestResultEmail.html");
             var message = template
-                .Replace("{{UserName}}", name)
-                .Replace("{{OResult}}", result["O"].ToString())
-                .Replace("{{KResult}}", result["К"].ToString())
-                .Replace("{{EResult}}", result["Э"].ToString())
-                .Replace("{{AResult}}", result["А"].ToString())
-                .Replace("{{HResult}}", result["Н"].ToString())
-                .Replace("{{ResultsLink}}", result["O"].ToString());
+                .Replace("{{UserName}}", userName)
+                .Replace("{{OResult}}", results["O"].ToString())
+                .Replace("{{KResult}}", results["К"].ToString())
+                .Replace("{{EResult}}", results["Э"].ToString())
+                .Replace("{{AResult}}", results["А"].ToString())
+                .Replace("{{HResult}}", results["Н"].ToString())
+                .Replace("{{ResultsLink}}", url);
 
             return message;
         }

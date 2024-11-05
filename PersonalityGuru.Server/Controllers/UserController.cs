@@ -13,6 +13,8 @@ namespace PersonalityGuru.Server.Controllers
     [EnableCors]
     public class UserController : ControllerBase, IUserController
     {
+        private readonly string ResultsBaseUrl = "https://localhost:7165/result";
+    
         private readonly IQuestionnaireRepository questionnaireRepository;
         private readonly IUserTestSessionRepository userTestSessionRepository;
         private readonly IUsersRepository usersRepository;
@@ -128,11 +130,13 @@ namespace PersonalityGuru.Server.Controllers
             };
         }
 
-        [HttpPost("{userId}/questionnaire/{testSessionId}/complete")]
-        public async Task CompleteQuestionnaire(string userId, string testSessionId)
+        [HttpPost("{userId}/questionnaire/{questionnaireId}/{testSessionId}/complete")]
+        public async Task CompleteQuestionnaire(string userId, int questionnaireId, string testSessionId)
         {
             var id = Guid.Parse(testSessionId);
             await userTestSessionRepository.CompleteUserTestSessionAsync(id);
+
+            await SendEmail(userId, questionnaireId, testSessionId);
         }
 
         [HttpGet("{userId}/questionnaire/{questionnaireId}/results/last")]
@@ -146,6 +150,19 @@ namespace PersonalityGuru.Server.Controllers
             }
 
             return TypedResults.Ok(lastAnswer);
+        }
+
+        [HttpGet("{userId}/questionnaire/{questionnaireId}/results/{sessionId}")]
+        public async Task<Results<NotFound, Ok<SavedUserAnswers>>> GetOneUserAnswers(string userId, int questionnaireId, string sessionId)
+        {
+            var answer = await questionnaireRepository.GetUserAnswersBySessionIdAsync(userId, questionnaireId, sessionId);
+
+            if (answer == null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            return TypedResults.Ok(answer);
         }
 
         [HttpGet("{userId}/questionnaire/{questionnaireId}/results")]
@@ -167,6 +184,7 @@ namespace PersonalityGuru.Server.Controllers
             string toEmail = "minko.anton@gmail.com";
             string toName = "Anton Minko";
             string subject = $"Результаты теста ОКЭАН для {toName}";
+            string url = $"{ResultsBaseUrl}/1";
 
             var builder = new EmailMassageBuilder();
             string message = await builder.BuildTestResultsMessage(toName, new Dictionary<string, double>
@@ -176,7 +194,28 @@ namespace PersonalityGuru.Server.Controllers
                 { "Э", 2.0 },
                 { "А", 3.5 },
                 { "Н", 4.5 },
-            });
+            }, url);
+
+            await emailGateway.SendEmailAsync(toEmail, toName, subject, message);
+        }
+
+        private async Task SendEmail(string userId, int questionnaireId, string sessionId)
+        {
+            var answer = await questionnaireRepository.GetUserAnswersBySessionIdAsync(userId, questionnaireId, sessionId);
+            var user = await usersRepository.GetUserByIdAsync(userId);
+
+            if (answer == null || user == null)
+            {
+                return;
+            }
+
+            string toEmail = user.Email;
+            string toName = user.FullName;
+            string subject = $"Результаты теста ОКЭАН для {toName}";
+            string url = $"{ResultsBaseUrl}/{questionnaireId}/{userId}/{sessionId}";
+            
+            var builder = new EmailMassageBuilder();
+            string message = await builder.BuildTestResultsMessage(toName, answer.Result, url);
 
             await emailGateway.SendEmailAsync(toEmail, toName, subject, message);
         }

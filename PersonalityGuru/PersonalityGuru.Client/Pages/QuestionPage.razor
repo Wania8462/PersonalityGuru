@@ -140,7 +140,7 @@ else
 
             if (string.IsNullOrEmpty(json))
             {
-                HttpRequestMessage requestC = new(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{SessionId}/complete");
+                HttpRequestMessage requestC = new(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{QuestionnaireId}/{SessionId}/complete");
                 requestC.Headers.Add("Origin", "https://localhost:7165");
                 request.Content = new StringContent($"{{}}", null, "application/json");
                 HttpResponseMessage responseC = await client.SendAsync(requestC);

@@ -37,31 +37,6 @@ namespace PersonalityGuru.Server.Repositories
             await appDbContext.SaveChangesAsync();
         }
 
-        public async Task<SavedUserAnswers?> GetLastUserAnswersAsync(string userId, int questionnaireId)
-        {
-            // Getting answers from all time
-            IQueryable<UserTestAnswer> userTestAnswers = appDbContext.UserTestAnswers
-                .Include(ua => ua.UserTestSession)
-                .Where(ua => ua.UserTestSession.UserId == userId
-                             && ua.UserTestSession.QuestionnaireId == questionnaireId);
-
-            DateTime? lastTime = userTestAnswers
-                .Include(ua => ua.UserTestSession)
-                .Max(ua => ua.UserTestSession.CompletedAt);
-
-            if (lastTime == null)
-                return null;
-
-            Dictionary<int, AnswerOption> answers = userTestAnswers
-                .Include(ua => ua.UserTestSession)
-                .Where(ua => ua.UserTestSession.CompletedAt == lastTime)
-                .ToDictionary(ua => ua.QuestionId, ua => ua.AnswerOption);
-
-            Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
-            Dictionary<string, double> result = CalculateAnswers(answers, questionnaire);
-            return new SavedUserAnswers(userId, questionnaireId, (DateTime)lastTime, result);
-        }
-
         public async Task<List<SavedUserAnswers>> GetAllUserAnswersAsync(string userId, int questionnaireId)
         {
             Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
@@ -106,6 +81,42 @@ namespace PersonalityGuru.Server.Repositories
             }
 
             return result;
+        }
+
+        public async Task<SavedUserAnswers?> GetLastUserAnswersAsync(string userId, int questionnaireId)
+        {
+            var lastSession = appDbContext.UserTestSessions
+                .Where(s => s.UserId == userId && s.QuestionnaireId == questionnaireId)
+                .OrderByDescending(s => s.CompletedAt)
+                .FirstOrDefault();
+
+            if (lastSession == null)
+                return null;
+
+            return await GetUserAnswersForSession(userId, questionnaireId, lastSession);
+        }
+
+        public async Task<SavedUserAnswers?> GetUserAnswersBySessionIdAsync(string userId, int questionnaireId, string sessionId)
+        {
+            var sessionGuid = Guid.Parse(sessionId);
+            var session = appDbContext.UserTestSessions.FirstOrDefault(s => s.Id == sessionGuid);
+
+            if (session == null)
+                return null;
+
+            return await GetUserAnswersForSession(userId, questionnaireId, session);
+        }
+
+        private async Task<SavedUserAnswers?> GetUserAnswersForSession(string userId, int questionnaireId, UserTestSession? lastSession)
+        {
+            Dictionary<int, AnswerOption> answers = appDbContext.UserTestAnswers
+                .Include(ua => ua.UserTestSession)
+                .Where(ua => ua.UserTestSession.Id == lastSession.Id)
+                .ToDictionary(ua => ua.QuestionId, ua => ua.AnswerOption);
+
+            Questionnaire questionnaire = await GetQuestionnaireAsync(questionnaireId);
+            Dictionary<string, double> result = CalculateAnswers(answers, questionnaire);
+            return new SavedUserAnswers(userId, questionnaireId, (DateTime)lastSession.CompletedAt, result);
         }
 
         private Dictionary<string, double> CalculateAnswers(Dictionary<int, AnswerOption> answers, Questionnaire questionnaire)
