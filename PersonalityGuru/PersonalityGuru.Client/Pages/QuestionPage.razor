@@ -20,46 +20,6 @@
 <div class="progress questionnaire-progress" role="progressbar" aria-label="Basic example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
     <div class="progress-bar" style="width: @progress%"></div>
 </div>
-
-@if (!loadedQuestion)
-{
-    <div class="vh-100 d-flex justify-content-center align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"
-            style="shape-rendering: auto; display: block; background: rgb(255, 255, 255);" width="200" height="200"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g>
-                <rect fill="#e15b64" height="40" width="15" y="30" x="17.5">
-                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="18;30;30"
-                        keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                        attributeName="y"></animate>
-                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="64;40;40"
-                        keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                        attributeName="height"></animate>
-                </rect>
-                <rect fill="#80c667" height="40" width="15" y="30" x="42.5">
-                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
-                        values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline"
-                        dur="1.3157894736842106s" repeatCount="indefinite" attributeName="y"></animate>
-                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
-                        values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline"
-                        dur="1.3157894736842106s" repeatCount="indefinite" attributeName="height"></animate>
-                </rect>
-                <rect fill="#7a64da" height="40" width="15" y="30" x="67.5">
-                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30"
-                        keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                        attributeName="y"></animate>
-                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40"
-                        keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                        attributeName="height"></animate>
-                </rect>
-                <g></g>
-            </g>
-        </svg>
-    </div>
-}
-
-else
-{
     <div class="vh-100 d-flex justify-content-center align-items-center">
         <div class="col-3" />
         <div class="flex-fill col-6">
@@ -107,7 +67,6 @@ else
         </div>
         <div class="col-3" />
     </div>
-}
 
 @code {
     public int id { get; set; }
@@ -125,40 +84,44 @@ else
     private int questionId;
     private float progress;
     private string userId;
-    private bool loadedQuestion;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             userId = await GetUserId();
-            HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/questionnaire/{SessionId}/nextQuestion");
-            request.Headers.Add("Origin", "https://localhost:7165");
-            HttpResponseMessage response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            string json = await response.Content.ReadAsStringAsync();
-
-            if (string.IsNullOrEmpty(json))
-            {
-                HttpRequestMessage requestC = new(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{QuestionnaireId}/{SessionId}/complete");
-                requestC.Headers.Add("Origin", "https://localhost:7165");
-                request.Content = new StringContent($"{{}}", null, "application/json");
-                HttpResponseMessage responseC = await client.SendAsync(requestC);
-                responseC.EnsureSuccessStatusCode();
-                NavManager.NavigateTo("/result/" + QuestionnaireId);
-            }
-
-            JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            question = JsonSerializer.Deserialize<NextQuestion>(json, options);
-
-            questionId = question.Id;
-            QuestionText = question.Text;
-            currentQuestion = question.AnsweredQuestionsCount + 1;
-            questonniareLength = question.AllQuestionsCount;
-            progress = (float)question.AnsweredQuestionsCount / (float)questonniareLength * 100f;
-            loadedQuestion = true;
-            StateHasChanged();
+            await LoadNextQuestion();
         }
+    }
+
+    private async Task LoadNextQuestion() {
+        HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/{userId}/questionnaire/{SessionId}/nextQuestion");
+        request.Headers.Add("Origin", "https://localhost:7165");
+        HttpResponseMessage response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        string json = await response.Content.ReadAsStringAsync();
+
+        if (string.IsNullOrEmpty(json))
+        {
+            HttpRequestMessage requestC = new(HttpMethod.Post, $"/api/users/{userId}/questionnaire/{QuestionnaireId}/{SessionId}/complete");
+            requestC.Headers.Add("Origin", "https://localhost:7165");
+            request.Content = new StringContent($"{{}}", null, "application/json");
+            HttpResponseMessage responseC = await client.SendAsync(requestC);
+            responseC.EnsureSuccessStatusCode();
+            NavManager.NavigateTo("/result/" + QuestionnaireId);
+            return;
+        }
+
+        JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        question = JsonSerializer.Deserialize<NextQuestion>(json, options);
+
+        questionId = question.Id;
+        QuestionText = question.Text;
+        currentQuestion = question.AnsweredQuestionsCount + 1;
+        questonniareLength = question.AllQuestionsCount;
+        progress = (float)question.AnsweredQuestionsCount / (float)questonniareLength * 100f;
+
+        StateHasChanged();
     }
 
     private async Task NextQuestion()
@@ -170,7 +133,8 @@ else
             request.Content = new StringContent($"{{\"answer\": {((int)answer).ToString()}}}", null, "application/json");
             HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            NavManager.NavigateTo("/question/" + SessionId + "/" + QuestionnaireId, true);
+            
+            await LoadNextQuestion();
         }
     }
 
