@@ -28,42 +28,47 @@
 
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="StronglyNo"
-                           @onclick="@(answer => SelectOption(AnswerOption.StronglyNo))">
+                           @onclick="@(answer => SelectOption(AnswerOption.StronglyNo))"
+                           checked="@(answer == AnswerOption.StronglyNo)">
                     <label class="form-check-label" for="StronglyNo">
                         Точно нет
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="MaybeNo"
-                           @onclick="@(answer => SelectOption(AnswerOption.MaybeNo))">
+                           @onclick="@(answer => SelectOption(AnswerOption.MaybeNo))"
+                           checked="@(answer == AnswerOption.MaybeNo)">
                     <label class="form-check-label" for="MaybeNo">
                         Скорее нет
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="Neutral"
-                           @onclick="@(answer => SelectOption(AnswerOption.Neutral))">
+                           @onclick="@(answer => SelectOption(AnswerOption.Neutral))"
+                           checked="@(answer == AnswerOption.Neutral)">
                     <label class="form-check-label" for="Neutral">
                         Не знаю
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="MaybeYes"
-                           @onclick="@(answer => SelectOption(AnswerOption.MaybeYes))">
+                           @onclick="@(answer => SelectOption(AnswerOption.MaybeYes))"
+                           checked="@(answer == AnswerOption.MaybeYes)">
                     <label class="form-check-label" for="MaybeYes">
                         Скорее да
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="StronglyYes"
-                           @onclick="@(answer => SelectOption(AnswerOption.StronglyYes))">
+                           @onclick="@(answer => SelectOption(AnswerOption.StronglyYes))"
+                           checked="@(answer == AnswerOption.StronglyYes)">
                     <label class="form-check-label" for="StronglyYes">
                         Точно да
                     </label>
                 </div>
             </div>
 
-            <button class="btn btn-success" @onclick="NextQuestion">Слейдущий вопрос</button>
+            <button class="btn btn-success" @onclick="NextQuestion" disabled="@(answer == AnswerOption.None)">Слейдущий вопрос</button>
         </div>
         <div class="col-3" />
     </div>
@@ -120,6 +125,7 @@
         currentQuestion = question.AnsweredQuestionsCount + 1;
         questonniareLength = question.AllQuestionsCount;
         progress = (float)question.AnsweredQuestionsCount / (float)questonniareLength * 100f;
+        SelectOption(AnswerOption.None);
 
         StateHasChanged();
     }
@@ -146,5 +152,8 @@
         return user?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
     }
 
-    private void SelectOption(AnswerOption option) => answer = option;
+    private void SelectOption(AnswerOption option) {
+        answer = option;
+        StateHasChanged();
+    }
 }
