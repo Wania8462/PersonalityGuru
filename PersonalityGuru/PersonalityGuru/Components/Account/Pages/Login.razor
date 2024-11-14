@@ -3,50 +3,60 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
 @using PersonalityGuru.Server.Data
+@using System.Security.Claims
+@using System.Text
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject IStringLocalizer<Login> Loc
 
-<PageTitle>Log in</PageTitle>
+<PageTitle>@Loc["RegisterHeader"]</PageTitle>
 
-<h1>Log in</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <StatusMessage Message="@errorMessage" />
-            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator />
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label for="email" class="form-label">Email</label>
-                    <ValidationMessage For="() => Input.Email" class="text-danger" />
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label for="password" class="form-label">Password</label>
-                    <ValidationMessage For="() => Input.Password" class="text-danger" />
-                </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
-                        Remember me
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-            </EditForm>
-        </section>
-    </div>
+<div class="vh-100 d-flex justify-content-center align-items-center">
+    <div class="col-3" />
+        <div class="flex-fill col-6">
+            <h1>@Loc["RegisterHeader"]</h1>
+            <div class="row">
+                <section>
+                    <StatusMessage Message="@errorMessage" />
+                    <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+                        <DataAnnotationsValidator />
+                        <hr />
+                        <ValidationSummary class="text-danger" role="alert" />
+                        <div class="form-floating mb-3">
+                            <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <label for="email" class="form-label">@Loc["EmailField"]</label>
+                            <ValidationMessage For="() => Input.Email" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputText @bind-Value="Input.FullName" class="form-control" autocomplete="username" aria-required="true" placeholder="ПІБ" />
+                            <label for="userName">@Loc["UserNameField"]</label>
+                            <ValidationMessage For="() => Input.FullName" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputText @bind-Value="Input.CompanyName" class="form-control" aria-required="true" placeholder="Назва компанії" />
+                            <label for="companyName">@Loc["CompanyNameField"]</label>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-100 btn btn-lg btn-primary">@Loc["RegisterButton"]</button>
+                        </div>
+                    </EditForm>
+                </section>
+            </div>
+        </div>
+    <div class="col-3" />
 </div>
 
 @code {
+    private static readonly string defaultPassword = "qwe123";
+    private static readonly string companyNameClaimType = "CompanyName";
+
     private string? errorMessage;
 
     [CascadingParameter]
@@ -69,29 +79,74 @@
 
     public async Task LoginUser()
     {
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var result = await SignInManager.PasswordSignInAsync(Input.Email, defaultPassword, isPersistent: true, lockoutOnFailure: false);
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
             RedirectManager.RedirectTo(ReturnUrl);
         }
-        else if (result.RequiresTwoFactor)
-        {
-            RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
-        }
-        else if (result.IsLockedOut)
-        {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
-        }
         else
         {
-            errorMessage = "Error: Invalid login attempt.";
+            Logger.LogInformation("Sign in failed, try to register a new user.");
+            await RegisterUser(new EditContext(Input));
         }
+    }
+
+    private async Task RegisterUser(EditContext editContext)
+    {
+        var user = CreateUser();
+
+        user.FullName = Input.FullName;
+        await UserManager.AddClaimAsync(user, new Claim(ClaimTypes.GivenName, Input.FullName));
+
+        if (!String.IsNullOrWhiteSpace(Input.CompanyName)) {
+            await UserManager.AddClaimAsync(user, new Claim(companyNameClaimType, Input.CompanyName));
+        }
+
+        await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+        var emailStore = GetEmailStore();
+        await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+        var result = await UserManager.CreateAsync(user, defaultPassword);
+
+        if (!result.Succeeded)
+        {
+            errorMessage = Loc["RegistrationErrorMessage"];
+            return;
+        }
+
+        Logger.LogInformation("User created a new account with password.");
+
+        var userId = await UserManager.GetUserIdAsync(user);
+        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        // do not require email confirmation, auto-confirm
+        await UserManager.ConfirmEmailAsync(user, code);
+
+        await SignInManager.SignInAsync(user, isPersistent: false);
+        RedirectManager.RedirectTo(ReturnUrl);
+    }
+
+    private ApplicationUser CreateUser()
+    {
+        try
+        {
+            return Activator.CreateInstance<ApplicationUser>();
+        }
+        catch
+        {
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
+        }
+    }
+
+    private IUserEmailStore<ApplicationUser> GetEmailStore()
+    {
+        if (!UserManager.SupportsUserEmail)
+        {
+            throw new NotSupportedException("The default UI requires a user store with email support.");
+        }
+        return (IUserEmailStore<ApplicationUser>)UserStore;
     }
 
     private sealed class InputModel
@@ -101,10 +156,9 @@
         public string Email { get; set; } = "";
 
         [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = "";
+        [Display(Name = "FullName")]
+        public string FullName { get; set; } = "";
 
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
+        public string CompanyName { get; set; } = "";
     }
 }
