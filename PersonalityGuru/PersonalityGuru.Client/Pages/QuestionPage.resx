@@ -145,4 +145,304 @@
     <value>Наступне питання</value>
     <comment>Next button</comment>
   </data>
+  <data name="OCEAN1" xml:space="preserve">
+    <value>Я бачу красу та сенси там, де інші їх не бачать</value>
+    <comment>Q1</comment>
+  </data>
+  <data name="OCEAN2" xml:space="preserve">
+    <value>Якщо людина мені не подобається, я не сприйму її аргументи впринципі</value>
+    <comment>Q2</comment>
+  </data>
+  <data name="OCEAN3" xml:space="preserve">
+    <value>Мені подобається вивчати та осягати нове, я з цікавістю вчусь новому</value>
+    <comment>Q3</comment>
+  </data>
+  <data name="OCEAN4" xml:space="preserve">
+    <value>Я постійно захоплююся новими ідеями</value>
+    <comment>Q4</comment>
+  </data>
+  <data name="OCEAN5" xml:space="preserve">
+    <value>Деяким людям моє мислення може здатися нестандартним і навіть дивним</value>
+    <comment>Q5</comment>
+  </data>
+  <data name="OCEAN6" xml:space="preserve">
+    <value>Мене більше цікавить конкретика, деталі та результати, аніж загальні ідеї, концепції та процеси</value>
+    <comment>Q6</comment>
+  </data>
+  <data name="OCEAN7" xml:space="preserve">
+    <value>Мене рідко цікавлять витвори мистецтва, музика, арт-об'єкти, естетика тощо</value>
+    <comment>Q7</comment>
+  </data>
+  <data name="OCEAN8" xml:space="preserve">
+    <value>Захоплюючись, я забуваю про все</value>
+    <comment>Q8</comment>
+  </data>
+  <data name="OCEAN9" xml:space="preserve">
+    <value>Мені подобається мріяти, я насолоджуюсь "польотом" фантазії</value>
+    <comment>Q9</comment>
+  </data>
+  <data name="OCEAN10" xml:space="preserve">
+    <value>Люди кажуть про мене як про заземлену і практичну людину</value>
+    <comment>Q10</comment>
+  </data>
+  <data name="OCEAN11" xml:space="preserve">
+    <value>Я весь час щось вигадую або адаптую під себе</value>
+    <comment>Q11</comment>
+  </data>
+  <data name="OCEAN12" xml:space="preserve">
+    <value>Мені важко знайти себе, визначити свій напрямок</value>
+    <comment>Q12</comment>
+  </data>
+  <data name="OCEAN13" xml:space="preserve">
+    <value>Я швидко адаптуюсь до нових обставин, задач та змін</value>
+    <comment>Q13</comment>
+  </data>
+  <data name="OCEAN14" xml:space="preserve">
+    <value>Я не люблю витрачати час на глибокі роздуми та філософствування</value>
+    <comment>Q14</comment>
+  </data>
+  <data name="OCEAN15" xml:space="preserve">
+    <value>Я завжди вибираю точні спеціалізації та навички</value>
+    <comment>Q15</comment>
+  </data>
+  <data name="OCEAN16" xml:space="preserve">
+    <value>Я ціную чистоту та порядок в усьому</value>
+    <comment>Q16</comment>
+  </data>
+  <data name="OCEAN17" xml:space="preserve">
+    <value>Я рідко читаю щось про самоорганізацію та менеджмент часу</value>
+    <comment>Q17</comment>
+  </data>
+  <data name="OCEAN18" xml:space="preserve">
+    <value>Мені властиві наполегливість, точність і якість у справах</value>
+    <comment>Q18</comment>
+  </data>
+  <data name="OCEAN19" xml:space="preserve">
+    <value>У мене достатньо вільного часу</value>
+    <comment>Q19</comment>
+  </data>
+  <data name="OCEAN20" xml:space="preserve">
+    <value>Я можу бути впертим(ою) і наполягати на своєму, я не люблю компроміси</value>
+    <comment>Q20</comment>
+  </data>
+  <data name="OCEAN21" xml:space="preserve">
+    <value>Я не люблю відповідальність і уникаю її</value>
+    <comment>Q21</comment>
+  </data>
+  <data name="OCEAN22" xml:space="preserve">
+    <value>Багато хто вважає мене зарозумілим(ою) та відстороненим(ою)</value>
+    <comment>Q22</comment>
+  </data>
+  <data name="OCEAN23" xml:space="preserve">
+    <value>Мені легко приступати до дій та виконання задач</value>
+    <comment>Q23</comment>
+  </data>
+  <data name="OCEAN24" xml:space="preserve">
+    <value>Я посидюча, дисциплінована та послідовна людина</value>
+    <comment>Q24</comment>
+  </data>
+  <data name="OCEAN25" xml:space="preserve">
+    <value>Мені не важко збрехати, вигадати "на ходу" або "прикрасити" деякі речі</value>
+    <comment>Q25</comment>
+  </data>
+  <data name="OCEAN26" xml:space="preserve">
+    <value>Я все роблю швидко</value>
+    <comment>Q26</comment>
+  </data>
+  <data name="OCEAN27" xml:space="preserve">
+    <value>Я досяг(ла) у житті багато чого своїми руками</value>
+    <comment>Q27</comment>
+  </data>
+  <data name="OCEAN28" xml:space="preserve">
+    <value>Я віддаю перевагу "руху у потоці", рідко планую і вирішую все по ходу подій</value>
+    <comment>Q28</comment>
+  </data>
+  <data name="OCEAN29" xml:space="preserve">
+    <value>Перед будь-яким вибором я зважую "за" і "проти"</value>
+    <comment>Q29</comment>
+  </data>
+  <data name="OCEAN30" xml:space="preserve">
+    <value>Мені не подобається мати чіткий план і розклад</value>
+    <comment>Q30</comment>
+  </data>
+  <data name="OCEAN31" xml:space="preserve">
+    <value>Мені подобається відчувати адреналін</value>
+    <comment>Q31</comment>
+  </data>
+  <data name="OCEAN32" xml:space="preserve">
+    <value>Я досить швидко і голосно розмовляю</value>
+    <comment>Q32</comment>
+  </data>
+  <data name="OCEAN33" xml:space="preserve">
+    <value>У мене спокійний та неквапливий ритм життя та мислення</value>
+    <comment>Q33</comment>
+  </data>
+  <data name="OCEAN34" xml:space="preserve">
+    <value>Я краще переписуюсь, ніж спілкуюсь вживу</value>
+    <comment>Q34</comment>
+  </data>
+  <data name="OCEAN35" xml:space="preserve">
+    <value>Серед людей я почуваюся як риба у воді</value>
+    <comment>Q35</comment>
+  </data>
+  <data name="OCEAN36" xml:space="preserve">
+    <value>Мені подобається незвично вдягатись і привертати до себе увагу</value>
+    <comment>Q36</comment>
+  </data>
+  <data name="OCEAN37" xml:space="preserve">
+    <value>Мені цікаво проводити час з іншими людьми</value>
+    <comment>Q37</comment>
+  </data>
+  <data name="OCEAN38" xml:space="preserve">
+    <value>Я люблю великі компанії та гарні вечірки</value>
+    <comment>Q38</comment>
+  </data>
+  <data name="OCEAN39" xml:space="preserve">
+    <value>Я не люблю, коли життя тече швидко і кожен день щось відбувається</value>
+    <comment>Q39</comment>
+  </data>
+  <data name="OCEAN40" xml:space="preserve">
+    <value>Я вірю, що все можливо, і в мене все вийде</value>
+    <comment>Q40</comment>
+  </data>
+  <data name="OCEAN41" xml:space="preserve">
+    <value>Між зустріччю з людьми та усамітненням я частіше оберу усамітнення</value>
+    <comment>Q41</comment>
+  </data>
+  <data name="OCEAN42" xml:space="preserve">
+    <value>Я не дуже товариська і говірка людина</value>
+    <comment>Q42</comment>
+  </data>
+  <data name="OCEAN43" xml:space="preserve">
+    <value>Я постійно в русі, мені складно всидіти на місці</value>
+    <comment>Q43</comment>
+  </data>
+  <data name="OCEAN44" xml:space="preserve">
+    <value>Мені подобається, коли мене хвалять і відзначають мої досягнення</value>
+    <comment>Q44</comment>
+  </data>
+  <data name="OCEAN45" xml:space="preserve">
+    <value>Я люблю тишу, спокій та усамітнення</value>
+    <comment>Q45</comment>
+  </data>
+  <data name="OCEAN46" xml:space="preserve">
+    <value>Я можу пожертвувати своїми інтересами та часом заради інших</value>
+    <comment>Q46</comment>
+  </data>
+  <data name="OCEAN47" xml:space="preserve">
+    <value>Мені неспокійно, коли інші відчувають себе погано</value>
+    <comment>Q47</comment>
+  </data>
+  <data name="OCEAN48" xml:space="preserve">
+    <value>Мені легко зрозуміти мотиви та біль інших людей</value>
+    <comment>Q48</comment>
+  </data>
+  <data name="OCEAN49" xml:space="preserve">
+    <value>Я часто буваю безжалісний(на), вимогливий(а) до інших</value>
+    <comment>Q49</comment>
+  </data>
+  <data name="OCEAN50" xml:space="preserve">
+    <value>Я не відчуваю бажання піклуватися про когось або підтримувати</value>
+    <comment>Q50</comment>
+  </data>
+  <data name="OCEAN51" xml:space="preserve">
+    <value>Я чуйна, доброзичлива та терпляча людина</value>
+    <comment>Q51</comment>
+  </data>
+  <data name="OCEAN52" xml:space="preserve">
+    <value>Мені важко сперечатися з тими, хто вище мене за статусом</value>
+    <comment>Q52</comment>
+  </data>
+  <data name="OCEAN53" xml:space="preserve">
+    <value>Я вірю, що більшість людей мають добрі наміри</value>
+    <comment>Q53</comment>
+  </data>
+  <data name="OCEAN54" xml:space="preserve">
+    <value>Я намагаюсь передбачити потреби людей у моєму оточенні</value>
+    <comment>Q54</comment>
+  </data>
+  <data name="OCEAN55" xml:space="preserve">
+    <value>Я можу навмисно завдати емоційного болю іншій людині</value>
+    <comment>Q55</comment>
+  </data>
+  <data name="OCEAN56" xml:space="preserve">
+    <value>На роботі я легко підкоряюся керівнику і стаю його довіреною особою</value>
+    <comment>Q56</comment>
+  </data>
+  <data name="OCEAN57" xml:space="preserve">
+    <value>Мені не особливо важливо, що думають і відчувають інші</value>
+    <comment>Q57</comment>
+  </data>
+  <data name="OCEAN58" xml:space="preserve">
+    <value>Я уникаю конфліктів і намагаюся знайти спільну мову з людьми, іноді діючи собі на шкоду</value>
+    <comment>Q58</comment>
+  </data>
+  <data name="OCEAN59" xml:space="preserve">
+    <value>Мені цікавіше співпрацювати та взаємодіяти, ніж конкурувати</value>
+    <comment>Q59</comment>
+  </data>
+  <data name="OCEAN60" xml:space="preserve">
+    <value>Мені легко висловлювати свою думку, навіть якщо з нею ніхто не згоден</value>
+    <comment>Q60</comment>
+  </data>
+  <data name="OCEAN61" xml:space="preserve">
+    <value>Я часто прокручую в голові слова людей, які мене зачепили</value>
+    <comment>Q61</comment>
+  </data>
+  <data name="OCEAN62" xml:space="preserve">
+    <value>Я часто уявляю найгірший сценарій</value>
+    <comment>Q62</comment>
+  </data>
+  <data name="OCEAN63" xml:space="preserve">
+    <value>Мене дратують впевнені в собі, гучні люди</value>
+    <comment>Q63</comment>
+  </data>
+  <data name="OCEAN64" xml:space="preserve">
+    <value>У мене в житті мало приводів для занепокоєння</value>
+    <comment>Q64</comment>
+  </data>
+  <data name="OCEAN65" xml:space="preserve">
+    <value>Я часто себе принижую, думаю про себе погано</value>
+    <comment>Q65</comment>
+  </data>
+  <data name="OCEAN66" xml:space="preserve">
+    <value>Я часто про щось хвилююся, відчуваю тривогу та напругу</value>
+    <comment>Q66</comment>
+  </data>
+  <data name="OCEAN67" xml:space="preserve">
+    <value>Після сильних негативних емоцій мені потрібен час, щоб прийти в себе. Я повільно відходжу</value>
+    <comment>Q67</comment>
+  </data>
+  <data name="OCEAN68" xml:space="preserve">
+    <value>Мене легко зачіпити, засмутити або образити</value>
+    <comment>Q68</comment>
+  </data>
+  <data name="OCEAN69" xml:space="preserve">
+    <value>У мене часто змінюється настрій</value>
+    <comment>Q69</comment>
+  </data>
+  <data name="OCEAN70" xml:space="preserve">
+    <value>Більшу частину часу я розслаблений(а)</value>
+    <comment>Q70</comment>
+  </data>
+  <data name="OCEAN71" xml:space="preserve">
+    <value>Я легко впадаю у негатив, страждання та депресію</value>
+    <comment>71</comment>
+  </data>
+  <data name="OCEAN72" xml:space="preserve">
+    <value>Якщо я злюсь або засмучений(а), це завжди видно по мені</value>
+    <comment>Q72</comment>
+  </data>
+  <data name="OCEAN73" xml:space="preserve">
+    <value>Я зберігаю спокій навіть під тиском</value>
+    <comment>Q73</comment>
+  </data>
+  <data name="OCEAN74" xml:space="preserve">
+    <value>Я схильний(на) описувати те, що відбувається, не на свою користь</value>
+    <comment>Q74</comment>
+  </data>
+  <data name="OCEAN75" xml:space="preserve">
+    <value>Я часто підозрюю приховані мотиви у інших</value>
+    <comment>Q75</comment>
+  </data>
 </root>

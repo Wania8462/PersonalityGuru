@@ -122,7 +122,10 @@
         question = JsonSerializer.Deserialize<NextQuestion>(json, options);
 
         questionId = question.Id;
-        QuestionText = question.Text;
+        QuestionText = Loc[$"OCEAN{question.Id}"];
+        if (QuestionText == $"OCEAN{question.Id}") {
+            QuestionText = question.Text;
+        }
         currentQuestion = question.AnsweredQuestionsCount + 1;
         questonniareLength = question.AllQuestionsCount;
         progress = (float)question.AnsweredQuestionsCount / (float)questonniareLength * 100f;
