@@ -17,4 +17,6 @@ builder.Services.AddScoped(sp =>
         BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7239")
     });
 
+builder.Services.AddLocalization();
+
 await builder.Build().RunAsync();

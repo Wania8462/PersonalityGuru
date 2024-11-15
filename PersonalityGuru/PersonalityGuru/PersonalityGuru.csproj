@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.5" />
     <ProjectReference Include="..\..\PersonalityGuru.Server\PersonalityGuru.Server.csproj" />
     <ProjectReference Include="..\..\PersonalityGuru.Shared\PersonalityGuru.Shared.csproj" />
     <ProjectReference Include="..\PersonalityGuru.Client\PersonalityGuru.Client.csproj" />

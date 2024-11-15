@@ -5,7 +5,6 @@ using PersonalityGuru.Components;
 using PersonalityGuru.Components.Account;
 using PersonalityGuru.Server.Data;
 using PersonalityGuru.Server;
-using PersonalityGuru.Shared;
 using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +38,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-//builder.Services.AddSingleton<UserManager<ApplicationUser>>();
 
 builder.Services.AddScoped(sp =>
     new HttpClient

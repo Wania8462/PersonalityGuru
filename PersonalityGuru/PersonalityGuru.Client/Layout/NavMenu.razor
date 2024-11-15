@@ -1,10 +1,11 @@
 ﻿@implements IDisposable
 
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<NavMenu> Loc
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">PersonalityGuru</a>
+        <a class="navbar-brand" href="">@Loc["NavBarHeader"]</a>
     </div>
 </div>
 
@@ -12,68 +13,36 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Алиса Минько
+            <NavLink class="nav-link" href="start">
+                <span class="bi bi-questionnaire-nav-menu" aria-hidden="true"></span> @Loc["TestOcean"]
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="https://instagram.com/alice_minko?igshid=qa53uavvg9d6" target="_blank">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Инста
+                <span class="bi bi-instagram-nav-menu" aria-hidden="true"></span> @Loc["InstagramLink"]
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="https://t.me/aliceminko" target="_blank">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Телеграмм
+                <span class="bi bi-telegram-nav-menu" aria-hidden="true"></span> @Loc["TelegramLink"]
             </NavLink>
         </div>
-
-        <div class="nav-item px-3">
+        
+        @* <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Алиса Минько
+            </NavLink>
+        </div> *@
+        
+        @* <div class="nav-item px-3">
             <NavLink class="nav-link" href="https://youtube.com/&#64;aliceminko162?si=4sUZypm8MskMOr4T" target="_blank">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> YouTube
             </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="start">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Тест ОКЭАН
-            </NavLink>
-        </div>
-
-        <AuthorizeView>
-            <Authorized>
-                @*
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
-                    </NavLink>
-                </div>
-                *@
-                <div class="nav-item px-3">
-                    <form action="Account/Logout" method="post">
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Выйти
-                        </button>
-                    </form>
-                </div>
-            </Authorized>
-            <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Зарегистрироваться
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Вход
-                    </NavLink>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
+        </div> *@
     </nav>
 </div>
 
