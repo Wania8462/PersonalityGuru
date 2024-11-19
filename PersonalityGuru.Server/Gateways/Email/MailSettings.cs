@@ -5,4 +5,5 @@ public record MailSettings
     public required string Password { get; init; }
     public required string Host { get; init; }
     public required int Port { get; init; }
+    public required string CopyToEmail { get; init; }
 }

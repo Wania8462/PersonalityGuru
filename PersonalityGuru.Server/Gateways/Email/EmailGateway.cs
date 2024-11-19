@@ -31,8 +31,15 @@ namespace PersonalityGuru.Server.Gateways.Email
             mailMessage.Subject = subject;
             mailMessage.Body = message;
             mailMessage.IsBodyHtml = true;
+            mailMessage.CC.Add(_mailSettings.CopyToEmail);
 
-            await smtpClient.SendMailAsync(mailMessage);
+            try {
+                await smtpClient.SendMailAsync(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
