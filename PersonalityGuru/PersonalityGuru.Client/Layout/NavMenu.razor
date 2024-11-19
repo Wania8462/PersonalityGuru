@@ -1,6 +1,8 @@
-﻿@implements IDisposable
+﻿@using System.Security.Claims
+@implements IDisposable
 
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IStringLocalizer<NavMenu> Loc
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -31,28 +33,34 @@
                 <span class="bi bi-telegram-nav-menu" aria-hidden="true"></span> @Loc["TelegramLink"]
             </NavLink>
         </div>
-        
-        @* <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Алиса Минько
-            </NavLink>
-        </div> *@
-        
-        @* <div class="nav-item px-3">
-            <NavLink class="nav-link" href="https://youtube.com/&#64;aliceminko162?si=4sUZypm8MskMOr4T" target="_blank">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> YouTube
-            </NavLink>
-        </div> *@
+
+        @if (IsAdminUser ?? false)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admin">
+                    <span class="bi bi-admin-nav-menu" aria-hidden="true"></span> @Loc["AdminPageLink"]
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
 
 @code {
+    private const string AdminRoleName = "AdminUser";
     private string? currentUrl;
 
-    protected override void OnInitialized()
+    private bool? IsAdminUser;
+
+    protected override async void OnInitialized()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+
+        if (IsAdminUser != true) 
+        {
+            IsAdminUser = await GetIsAdmin();
+            StateHasChanged();
+        }
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
@@ -64,6 +72,14 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private async Task<bool> GetIsAdmin()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var adminClaim = user?.Claims.FirstOrDefault(x => x.Type == AdminRoleName);
+        return adminClaim?.Value == "true";
     }
 }
 

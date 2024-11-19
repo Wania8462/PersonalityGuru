@@ -13,38 +13,37 @@
 @if (!loadedUsers)
 {
     <div class="vh-100 d-flex justify-content-center align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"
-             style="shape-rendering: auto; display: block; background: rgb(255, 255, 255);" width="200" height="200"
-             xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g>
-                <rect fill="#e15b64" height="40" width="15" y="30" x="17.5">
-                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="18;30;30"
-                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                             attributeName="y"></animate>
-                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="64;40;40"
-                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                             attributeName="height"></animate>
-                </rect>
-                <rect fill="#80c667" height="40" width="15" y="30" x="42.5">
-                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
-                             values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline"
-                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="y"></animate>
-                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
-                             values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline"
-                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="height"></animate>
-                </rect>
-                <rect fill="#7a64da" height="40" width="15" y="30" x="67.5">
-                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30"
-                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                             attributeName="y"></animate>
-                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40"
-                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
-                             attributeName="height"></animate>
-                </rect>
-                <g></g>
-            </g>
-        </svg>
-    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"
+        style="shape-rendering: auto; display: block; background: rgb(255, 255, 255);" width="200" height="200"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g>
+            <rect fill="#e15b64" height="40" width="15" y="30" x="17.5">
+                <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="18;30;30"
+                    keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                    attributeName="y"></animate>
+                <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="64;40;40"
+                    keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                    attributeName="height"></animate>
+            </rect>
+            <rect fill="#80c667" height="40" width="15" y="30" x="42.5">
+                <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                    values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s"
+                    repeatCount="indefinite" attributeName="y"></animate>
+                <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                    values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s"
+                    repeatCount="indefinite" attributeName="height"></animate>
+            </rect>
+            <rect fill="#7a64da" height="40" width="15" y="30" x="67.5">
+                <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30" keyTimes="0;0.5;1"
+                    calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite" attributeName="y"></animate>
+                <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40" keyTimes="0;0.5;1"
+                    calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite" attributeName="height">
+                </animate>
+            </rect>
+            <g></g>
+        </g>
+    </svg>
+</div>
 }
 
 else
@@ -52,40 +51,32 @@ else
     <h3>AdminPage</h3>
 
     <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Открытость</th>
-                <th scope="col">Кропотливость</th>
-                <th scope="col">Экстроверсия</th>
-                <th scope="col">Аккомодация</th>
-                <th scope="col">Невротичность</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (User user in users)
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Компания</th>
+            <th scope="col">Дата</th>
+            <th scope="col">Открытость</th>
+            <th scope="col">Кропотливость</th>
+            <th scope="col">Экстроверсия</th>
+            <th scope="col">Аккомодация</th>
+            <th scope="col">Невротичность</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var result in userResults)
             {
                 <tr>
-                    <th scope="row">@user.FullName</th>
-                    <td>@user.Email</td>
-                    @if (user.SavedUserAnswers.Count != 0)
-                    {
-                        <td>@user.SavedUserAnswers[0].Result["O"]</td>
-                        <td>@user.SavedUserAnswers[0].Result["К"]</td>
-                        <td>@user.SavedUserAnswers[0].Result["Э"]</td>
-                        <td>@user.SavedUserAnswers[0].Result["А"]</td>
-                        <td>@user.SavedUserAnswers[0].Result["Н"]</td>
-                    }
-
-                    else
-                    {
-                        <td>null</td>
-                        <td>null</td>
-                        <td>null</td>
-                        <td>null</td>
-                        <td>null</td>
-                    }
+                    <th scope="row">@result.Name</th>
+                    <td>@result.Email</td>
+                    <td>@result.Company</td>
+                    <td>@result.CompletedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@result.O.ToString("N1")</td>
+                    <td>@result.K.ToString("N1")</td>
+                    <td>@result.E.ToString("N1")</td>
+                    <td>@result.A.ToString("N1")</td>
+                    <td>@result.N.ToString("N1")</td>
                 </tr>
             }
         </tbody>
@@ -93,22 +84,45 @@ else
 }
 
 @code {
+    private const int MaxResultsOnPage = 100;
     private List<User> users = [];
+    private List<UserResult> userResults = [];
     private bool loadedUsers;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender)
+        if (firstRender)
         {
             HttpRequestMessage request = new(HttpMethod.Get, $"/api/users/all/{1}");
-            request.Headers.Add("Origin", "https://localhost:7165");    
+            request.Headers.Add("Origin", "https://localhost:7165");
             HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string json = await response.Content.ReadAsStringAsync();
             JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             users = JsonSerializer.Deserialize<List<User>>(json, options);
+            
+            userResults = users
+                .SelectMany(user => user.SavedUserAnswers
+                .Select(answer => new UserResult(
+                    user.FullName, 
+                    user.Email, 
+                    "", 
+                    answer.CompletedAt, 
+                    answer.Result["O"], 
+                    answer.Result["К"], 
+                    answer.Result["Э"], 
+                    answer.Result["А"], 
+                    answer.Result["Н"]
+                )))
+                .OrderByDescending(x => x.CompletedAt)
+                .Take(MaxResultsOnPage)
+                .ToList();
+
             loadedUsers = true;
             StateHasChanged();
         }
     }
+
+    record UserResult(string Name, string Email, string Company, DateTime CompletedAt, double O, double K, double E, double
+    A, double N);
 }

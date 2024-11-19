@@ -133,4 +133,8 @@
     <value>Alisa Minko</value>
     <comment>Header</comment>
   </data>
+  <data name="AdminPageLink" xml:space="preserve">
+    <value>Адмінка</value>
+    <comment>Admin only link</comment>
+  </data>
 </root>

@@ -61,7 +61,7 @@ namespace PersonalityGuru.Server.Repositories
 
                     else
                     {
-                        times[(DateTime)time].Add(uta.QuestionId, uta.AnswerOption);
+                        times[(DateTime)time][uta.QuestionId] = uta.AnswerOption;
                     }
                 }
             }

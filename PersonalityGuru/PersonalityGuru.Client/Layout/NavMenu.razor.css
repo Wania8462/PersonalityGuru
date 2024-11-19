@@ -35,15 +35,23 @@
 }
 
 .bi-questionnaire-nav-menu {
+    margin-left: 4px;
     background-image: url('./Images/QuestionnaireLogo.png');
 }
 
 .bi-instagram-nav-menu {
+    margin-left: 4px;
     background-image: url('./Images/InstagramLogo.png');
 }
 
 .bi-telegram-nav-menu {
+    margin-left: 4px;
     background-image: url('./Images/TelegramLogo.png');
+}
+
+.bi-admin-nav-menu {
+    margin-left: 4px;
+    background-image: url('./Images/AdminLogo.png');
 }
 
 .nav-item {
