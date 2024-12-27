@@ -7,7 +7,7 @@
 @inject NavigationManager Navigation
 
 <head>
-    <PageTitle>Question page</PageTitle>
+    <PageTitle>Admin page</PageTitle>
 </head>
 
 @if (!loadedUsers)
@@ -48,7 +48,15 @@
 
 else
 {
-    <h3>AdminPage</h3>
+    <nav class="navbar bg-body-tertiary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">Admin page</a>
+            <div class="d-flex" role="search">
+                <input class="form-control me-2" type="search" @bind="@searchValue" placeholder="Search by name" aria-label="Search">
+                <button class="btn btn-outline-secondary" @onclick="FindUsers">Search</button>
+            </div>
+        </div>
+    </nav>
 
     <table class="table">
     <thead>
@@ -65,7 +73,7 @@ else
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in userResults)
+        @foreach (var user in selectedUsers)
             {
                 <tr>
                     <th scope="row"><a href="https://localhost:7165/admin/@user.Id">@user.Name</a></th>
@@ -86,7 +94,9 @@ else
 @code {
     private const int MaxResultsOnPage = 100;
     private List<User> users = [];
-    private List<UserResult> userResults = [];
+    private List<UserResult> selectedUsers = [];
+    private List<UserResult> allUsers = [];
+    private string searchValue = "";
     private bool loadedUsers;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -101,7 +111,7 @@ else
             JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             users = JsonSerializer.Deserialize<List<User>>(json, options);
 
-            userResults = users
+            allUsers = users
                 .SelectMany(user => user.SavedUserAnswers
                 .Select(answer => new UserResult(
                     user.Id,
@@ -119,9 +129,16 @@ else
                 .Take(MaxResultsOnPage)
                 .ToList();
 
+            selectedUsers = allUsers;
             loadedUsers = true;
             StateHasChanged();
         }
+    }
+
+    private void FindUsers()
+    {
+        selectedUsers = allUsers.FindAll(e => e.Name.Contains(searchValue) || e.Company.Contains(searchValue) || e.Email.Contains(searchValue));
+        StateHasChanged();
     }
 
     record UserResult(string Id,  string Name, string Email, string Company, DateTime CompletedAt, double O, double K, double E, double
