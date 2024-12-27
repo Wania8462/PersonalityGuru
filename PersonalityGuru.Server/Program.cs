@@ -58,4 +58,10 @@ app.UseCors();
 app.MapControllers()
     .WithOpenApi();
 
+using (var serviceScope = app.Services.CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated();
+}
+
 app.Run();
