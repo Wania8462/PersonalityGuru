@@ -1,3 +1,5 @@
+namespace PersonalityGuru.Server.Gateways.Email;
+
 public record MailSettings
 {
     public required string EmailId { get; init; }
