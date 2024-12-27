@@ -19,4 +19,11 @@
     <ProjectReference Include="..\..\PersonalityGuru.Shared\PersonalityGuru.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Pages\StartTest.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StartTest.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
