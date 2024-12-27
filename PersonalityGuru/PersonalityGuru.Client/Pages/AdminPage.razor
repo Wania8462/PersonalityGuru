@@ -65,18 +65,18 @@ else
         </tr>
     </thead>
     <tbody>
-        @foreach (var result in userResults)
+        @foreach (var user in userResults)
             {
                 <tr>
-                    <th scope="row">@result.Name</th>
-                    <td>@result.Email</td>
-                    <td>@result.Company</td>
-                    <td>@result.CompletedAt.ToString("dd.MM.yyyy HH:mm")</td>
-                    <td>@result.O.ToString("N1")</td>
-                    <td>@result.K.ToString("N1")</td>
-                    <td>@result.E.ToString("N1")</td>
-                    <td>@result.A.ToString("N1")</td>
-                    <td>@result.N.ToString("N1")</td>
+                    <th scope="row"><a href="https://localhost:7165/admin/@user.Id">@user.Name</a></th>
+                    <td>@user.Email</td>
+                    <td>@user.Company</td>
+                    <td>@user.CompletedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@user.O.ToString("N1")</td>
+                    <td>@user.K.ToString("N1")</td>
+                    <td>@user.E.ToString("N1")</td>
+                    <td>@user.A.ToString("N1")</td>
+                    <td>@user.N.ToString("N1")</td>
                 </tr>
             }
         </tbody>
@@ -100,10 +100,11 @@ else
             string json = await response.Content.ReadAsStringAsync();
             JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             users = JsonSerializer.Deserialize<List<User>>(json, options);
-            
+
             userResults = users
                 .SelectMany(user => user.SavedUserAnswers
                 .Select(answer => new UserResult(
+                    user.Id,
                     user.FullName, 
                     user.Email, 
                     "", 
@@ -123,6 +124,6 @@ else
         }
     }
 
-    record UserResult(string Name, string Email, string Company, DateTime CompletedAt, double O, double K, double E, double
+    record UserResult(string Id,  string Name, string Email, string Company, DateTime CompletedAt, double O, double K, double E, double
     A, double N);
 }

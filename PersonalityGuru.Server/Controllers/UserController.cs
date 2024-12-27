@@ -53,7 +53,8 @@ namespace PersonalityGuru.Server.Controllers
                         user.Id,
                         user.FullName,
                         user.Email,
-                        answers
+                        answers,
+                        Role.User
                     ));
                 }
             }
@@ -75,7 +76,8 @@ namespace PersonalityGuru.Server.Controllers
                 appUser.Id,
                 appUser.FullName,
                 appUser.Email,
-                answers
+                answers,
+                Role.User
             );
 
             return TypedResults.Ok(user);
@@ -136,7 +138,7 @@ namespace PersonalityGuru.Server.Controllers
             var id = Guid.Parse(testSessionId);
             await userTestSessionRepository.CompleteUserTestSessionAsync(id);
 
-            await SendEmail(userId, questionnaireId, testSessionId);
+            //await SendEmail(userId, questionnaireId, testSessionId);
         }
 
         [HttpGet("{userId}/questionnaire/{questionnaireId}/results/last")]
