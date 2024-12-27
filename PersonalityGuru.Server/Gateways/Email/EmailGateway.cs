@@ -37,6 +37,7 @@ namespace PersonalityGuru.Server.Gateways.Email
 
             try {
                 await smtpClient.SendMailAsync(mailMessage);
+                Console.WriteLine($"Email sent to {toEmail}");
             }
             catch (Exception ex)
             {
