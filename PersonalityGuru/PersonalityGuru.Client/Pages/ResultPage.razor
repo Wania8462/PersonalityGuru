@@ -7,21 +7,38 @@
 @using System.Text.Json
 @using PersonalityGuru.Shared.Models
 
-<h1>Results</h1>
+<style>
+    .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+</style>
 
-@if (result!=null)
-{
-    <h2>Открытость: @result["O"]</h2>
-    <h2>Кропотливость: @result["К"]</h2>
-    <h2>Экстраверсия: @result["Э"]</h2>
-    <h2>Аккомодация: @result["А"]</h2>
-    <h2>Невротичность: @result["Н"]</h2>
-}
-    
-else
-{
-    <h2>Oops, something went wrong.</h2>
-}
+<img src="Images/OceanImg.jpg" alt="Background" style="height: 20%" class="background-image">
+<div class="container-fluid h-90" style="padding-top: 20%">
+    <div class="row">
+        <div style="padding-left: 10%; padding-right: 10%">
+            <h2>Результати тесту</h2>
+            @if (result.Any())
+            {
+                <ul>
+                    <li><b>Відкритість до досвіду: @result["O"]</b></li>
+                    <li><b>Сумлінність: @result["К"]</b></li>
+                    <li><b>Екстраверсія: @result["Э"]</b></li>
+                    <li><b>Зговірливість: @result["А"]</b></li>
+                    <li><b>Невротизм: @result["Н"]</b></li>
+                </ul>
+            }
+            <p>Так тримати! Ви на правильному шляху до кращого розуміння себе.</p>
+            <p>За детальною розшифровкою і аналізом звертайтесь до спеціаліста.</p>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -33,7 +50,7 @@ else
     [Parameter]
     public Guid? providedSessionId { get; set; }
 
-    private Dictionary<string, double> result;
+    private Dictionary<string, double> result = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
