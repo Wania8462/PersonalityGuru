@@ -19,31 +19,70 @@
     }
 </style>
 
-<img src="Images/OceanImg.jpg" alt="Background" style="height: 20%" class="background-image">
-<div class="container-fluid h-90" style="padding-top: 20%">
-    <div class="row">
-        <div style="padding-left: 10%; padding-right: 10%">
-            <h2>Результати тесту</h2>
-            @if (result.Any())
-            {
-                <ul>
-                    <li><b>Відкритість до досвіду: @result["O"]</b></li>
-                    <li><b>Сумлінність: @result["К"]</b></li>
-                    <li><b>Екстраверсія: @result["Э"]</b></li>
-                    <li><b>Зговірливість: @result["А"]</b></li>
-                    <li><b>Невротизм: @result["Н"]</b></li>
-                </ul>
-            }
-            <p>Так тримати! Ви на правильному шляху до кращого розуміння себе.</p>
-            <p>За детальною розшифровкою і аналізом звертайтесь до спеціаліста.</p>
+@if (!loadedUser)
+{
+    <div class="vh-100 d-flex justify-content-center align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"
+             style="shape-rendering: auto; display: block; background: rgb(255, 255, 255);" width="200" height="200"
+             xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g>
+                <rect fill="#e15b64" height="40" width="15" y="30" x="17.5">
+                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="18;30;30"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="y"></animate>
+                    <animate begin="-0.2631578947368421s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="64;40;40"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="height"></animate>
+                </rect>
+                <rect fill="#80c667" height="40" width="15" y="30" x="42.5">
+                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                             values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline"
+                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="y"></animate>
+                    <animate begin="-0.13157894736842105s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1"
+                             values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline"
+                             dur="1.3157894736842106s" repeatCount="indefinite" attributeName="height"></animate>
+                </rect>
+                <rect fill="#7a64da" height="40" width="15" y="30" x="67.5">
+                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="y"></animate>
+                    <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40"
+                             keyTimes="0;0.5;1" calcMode="spline" dur="1.3157894736842106s" repeatCount="indefinite"
+                             attributeName="height"></animate>
+                </rect>
+                <g></g>
+            </g>
+        </svg>
+    </div>
+}
+
+else{
+    <img src="Images/OceanImg.jpg" alt="Background" style="height: 20%" class="background-image">
+    <div class="container-fluid d-flex flex-column justify-content-start" style="padding-top: 20vh; height: 80vh; box-sizing: border-box;">
+        <div class="row">
+            <div style="padding-left: 10%; padding-right: 10%">
+                <h2>Результати тесту</h2>
+                @if (result.Any())
+                {
+                    <ul>
+                        <li><b>Відкритість до досвіду: @result["O"]</b></li>
+                        <li><b>Сумлінність: @result["К"]</b></li>
+                        <li><b>Екстраверсія: @result["Э"]</b></li>
+                        <li><b>Зговірливість: @result["А"]</b></li>
+                        <li><b>Невротизм: @result["Н"]</b></li>
+                    </ul>
+                }
+                <p>Так тримати! Ви на правильному шляху до кращого розуміння себе.</p>
+                <p>За детальною розшифровкою і аналізом звертайтесь до спеціаліста.</p>
+            </div>
         </div>
     </div>
-</div>
+}
 
 @code {
     [Parameter]
     public string questionnaireId { get; set; }
-    
+
     [Parameter]
     public Guid? providedUserId { get; set; }
 
@@ -51,6 +90,7 @@
     public Guid? providedSessionId { get; set; }
 
     private Dictionary<string, double> result = new();
+    private bool loadedUser = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -68,6 +108,7 @@
             SavedUserAnswers? answers = JsonSerializer.Deserialize<SavedUserAnswers>(json, options);
 
             result = answers.Result;
+            loadedUser = true;
             StateHasChanged();
         }
     }
